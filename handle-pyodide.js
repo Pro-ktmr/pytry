@@ -11,7 +11,7 @@ window.addEventListener('load', (event) => {
 
 function disableReady() {
   ready = false;
-  document.getElementById('run-button').innerHTML = '';
+  document.getElementById('run-button').innerHTML = '<div class="loader-inner ball-pulse"><div></div><div></div><div></div></div>';
   document.getElementById('run-button').classList.remove('pushable');
 }
 function enableReady() {
