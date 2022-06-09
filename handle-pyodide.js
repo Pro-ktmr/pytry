@@ -40,6 +40,9 @@ function workerListenner(msg) {
   let output = msg.data[1];
   outputEditor.setValue(formatedOutput);
   outputEditor.revealLine(0);
+
+  sendSubmission(editor.getValue(), inputEditor.getValue(), outputEditor.getValue());
+
   let err = [...formatedOutput.matchAll(/プログラムの (\d*) 行目/g)];
   if (err != null && err.length != 0) {
     let l = Number(err[err.length - 1][1]);
@@ -68,4 +71,41 @@ function cancelRunning() {
   outputEditor.setValue('実行から 10 秒が経過したため処理を打ち切りました\n次に実行できるようになるまで数秒かかります');
   worker.terminate();
   initializeWorker();
+}
+
+function sendSubmission(source, input, output) {
+  const param = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json; charset=utf-8'
+    },
+    body: JSON.stringify({
+      time: getTime(),
+      source: JSON.stringify(source.substr(0, 5000)),
+      input: JSON.stringify(input.substr(0, 5000)),
+      output: JSON.stringify(output.substr(0, 5000)),
+    })
+  };
+  fetch('https://ktmr.vsw.jp/pytry/run.php', param)
+    .then(response => response.json())
+    .then(json => {
+      if (!json.status) {
+        console.log(`${json.result}`);
+      }
+    })
+    .catch(error => {
+      console.log(`${error}`);
+    });
+}
+
+function getTime() {
+  var date = new Date();
+  var y = date.getFullYear();
+  var mo = ('00' + (date.getMonth() + 1)).slice(-2);
+  var d = ('00' + date.getDate()).slice(-2);
+  var h = ('00' + date.getHours()).slice(-2);
+  var mi = ('00' + date.getMinutes()).slice(-2);
+  var s = ('00' + date.getSeconds()).slice(-2);
+  var ms = ('000' + date.getMilliseconds()).slice(-3);
+  return y + '-' + mo + '-' + d + '_' + h + '-' + mi + '-' + s + '-' + ms;
 }
