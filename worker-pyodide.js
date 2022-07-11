@@ -52,6 +52,7 @@ function formatOutput(output) {
   output = output.replaceAll(/NameError: name '(.*)' is not defined/g, "NameError: 「$1」が見つかりません\n");
   output = output.replaceAll('SyntaxError: invalid syntax', 'SyntaxError: 文法が間違っています\n');
   output = output.replaceAll('IndentationError: expected an indented block', 'IndentationError: インデントを忘れています\n');
+  output = output.replaceAll('IndentationError: unexpected indent', 'IndentationError: インデントがおかしな位置にあります\n');
   output = output.replaceAll('IndentationError: unindent does not match any outer indentation level', 'IndentationError: インデントが揃っていません\n');
   output = output.replaceAll(/ValueError: invalid literal for int\(\) with base 10: '(.*)'/g, "ValueError: 「$1」を整数に変換できません (入力の受け取り方や入力欄が正しくないことがあります)\n");
   output = output.replaceAll(/ValueError: not enough values to unpack \(expected (.*), got (.*)\)/g, "ValueError: $2 個しかないデータを $1 個に分けようとしました (入力の受け取り方や入力欄が正しくないことがあります)\n");
