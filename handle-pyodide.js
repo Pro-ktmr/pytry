@@ -41,8 +41,6 @@ function workerListenner(msg) {
   outputEditor.setValue(formatedOutput);
   outputEditor.revealLine(0);
 
-  sendSubmission(editor.getValue(), inputEditor.getValue(), outputEditor.getValue());
-
   let err = [...formatedOutput.matchAll(/プログラムの (\d*) 行目/g)];
   if (err != null && err.length != 0) {
     let l = Number(err[err.length - 1][1]);
@@ -65,6 +63,8 @@ function workerListenner(msg) {
     editor.markers = [];
     monaco.editor.setModelMarkers(editor.getModel(), 'message', editor.markers);
   }
+  
+  sendSubmission(editor.getValue(), inputEditor.getValue(), outputEditor.getValue());
 }
 
 function cancelRunning() {
