@@ -81,7 +81,8 @@ function sendSubmission(source, input, output, error) {
       input: JSON.stringify(input.substr(0, 5000)),
       output: JSON.stringify(output.substr(0, 5000)),
       error: JSON.stringify(error.substr(0, 5000)),
-    })
+    }),
+    credentials: 'include',
   };
   fetch('https://ktmr.vsw.jp/pytry/run.php', param)
     .then(response => response.json())
