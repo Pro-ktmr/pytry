@@ -34,14 +34,15 @@ function run() {
 function workerListenner(msg) {
   enableReady();
   if (msg.data == 'ready') return;
-
   clearTimeout(timer);
-  let formatedOutput = msg.data[0];
-  let output = msg.data[1];
-  outputEditor.setValue(formatedOutput);
-  outputEditor.revealLine(0);
 
-  let err = [...formatedOutput.matchAll(/プログラムの (\d*) 行目/g)];
+  const output = msg.data[0];
+  const error = msg.data[1];
+  const mergedOutput = output + formatErrorMessage(error);
+
+  outputEditor.setValue(mergedOutput);
+  outputEditor.revealLine(0);
+  let err = [...mergedOutput.matchAll(/プログラムの (\d*) 行目/g)];
   if (err != null && err.length != 0) {
     let l = Number(err[err.length - 1][1]);
     editor.markers = [{
@@ -49,22 +50,17 @@ function workerListenner(msg) {
       startColumn: 1,
       endLineNumber: l,
       endColumn: 1000,
-      message: formatedOutput,
+      message: mergedOutput,
       severity: monaco.MarkerSeverity.Error,
     }];
     monaco.editor.setModelMarkers(editor.getModel(), 'message', editor.markers);
-    outputEditor.setValue(
-      formatedOutput
-      + '\n=== エラー原文 ===\n'
-      + output
-      + '==================\n');
   }
   else {
     editor.markers = [];
     monaco.editor.setModelMarkers(editor.getModel(), 'message', editor.markers);
   }
-  
-  sendSubmission(editor.getValue(), inputEditor.getValue(), outputEditor.getValue());
+
+  sendSubmission(editor.getValue(), inputEditor.getValue(), output, formatErrorMessage(error));
 }
 
 function cancelRunning() {
@@ -73,7 +69,7 @@ function cancelRunning() {
   initializeWorker();
 }
 
-function sendSubmission(source, input, output) {
+function sendSubmission(source, input, output, error) {
   const param = {
     method: 'POST',
     headers: {
@@ -84,6 +80,7 @@ function sendSubmission(source, input, output) {
       source: JSON.stringify(source.substr(0, 5000)),
       input: JSON.stringify(input.substr(0, 5000)),
       output: JSON.stringify(output.substr(0, 5000)),
+      error: JSON.stringify(error.substr(0, 5000)),
     })
   };
   fetch('https://ktmr.vsw.jp/pytry/run.php', param)
@@ -108,4 +105,45 @@ function getTime() {
   var s = ('00' + date.getSeconds()).slice(-2);
   var ms = ('000' + date.getMilliseconds()).slice(-3);
   return y + '-' + mo + '-' + d + '_' + h + '-' + mi + '-' + s + '-' + ms;
+}
+
+function formatErrorMessage(original) {
+  if (original == '') return '';
+
+  // オリジナル
+  original = original.replaceAll(/(.*)File "<exec>"(.*)\n/g, '');
+  original = original.replaceAll(/(.*)File "<string>", line (\d*)(.*)\n/g, '$1File "Main.py", line $2$3\n');
+
+  let formatted = original;
+
+  // 基本
+  formatted = formatted.replaceAll('Traceback (most recent call last):', 'エラー発生:');
+  formatted = formatted.replaceAll(/(.*)File "Main.py", line (\d*)(.*)/g, '$1プログラムの $2 行目');
+
+  // インデント
+  formatted = formatted.replaceAll('IndentationError: expected an indented block', 'インデントエラー: インデントを忘れています');
+  formatted = formatted.replaceAll('IndentationError: unexpected indent', 'インデントエラー: インデントがおかしな位置にあります');
+  formatted = formatted.replaceAll('IndentationError: unindent does not match any outer indentation level', 'インデントエラー: インデントが揃っていません');
+  formatted = formatted.replaceAll('SyntaxError: invalid non-printable character U+3000', '文法エラー: 全角スペースが紛れ込んでいます (半角スペース 2 個に直しましょう)');
+
+  // 入出力
+  formatted = formatted.replaceAll(/ValueError: invalid literal for int\(\) with base 10: '(.*)'/g, '値エラー: 「$1」を整数に変換できません (入力の受け取り方や入力欄が正しくないことがあります)');
+  formatted = formatted.replaceAll(/ValueError: not enough values to unpack \(expected (.*), got (.*)\)/g, '値エラー: $2 個しかないデータを $1 個に分けようとしました (入力の受け取り方や入力欄が正しくないことがあります)');
+  formatted = formatted.replaceAll(/ValueError: too many values to unpack \(expected (.*)\)/g, '値エラー: $1 個より多いデータを $1 個に分けようとしました (入力の受け取り方や入力欄が正しくないことがあります)');
+  formatted = formatted.replaceAll('EOFError: EOF when reading a line', 'ファイル末尾エラー: ファイルの末尾に到達しました (入力の受け取り方や入力欄が正しくないことがあります)');
+
+  // 存在しない
+  formatted = formatted.replaceAll(/NameError: name '(.*)' is not defined/g, '名前エラー: 「$1」が見つかりません');
+  formatted = formatted.replaceAll('IndexError: string index out of range', '添え字エラー: 文字列の長さ以上の添え字の文字にアクセスしようとしました');
+  formatted = formatted.replaceAll('IndexError: list index out of range', '添え字エラー: リストのサイズ以上の添え字の要素にアクセスしようとしました');
+  formatted = formatted.replaceAll(/KeyError: '(.*)'/g, 'キーエラー: キー「$1」は存在しません');
+
+  // 文法
+  formatted = formatted.replaceAll('SyntaxError: invalid syntax', '文法エラー: 文法が間違っています');
+  formatted = formatted.replaceAll('SyntaxError: EOL while scanning string literal', '文法エラー: 文字列の終わりのクオーテーションが見つかりません');
+
+  // 演算
+  formatted = formatted.replaceAll('ZeroDivisionError: division by zero', 'ゼロ除算エラー: ゼロで割ろうとしました');
+
+  return `\n${formatted}\n=== エラー原文 ===\n${original}==================`;
 }

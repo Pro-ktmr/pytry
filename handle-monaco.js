@@ -34,6 +34,7 @@ window.addEventListener('load', (event) => {
       renderIndentGuides: true,
       folding: false,
       'bracketPairColorization.enabled': true,
+      lineDecorationsWidth: 30,
     });
     editor.setModel(session);
     session.onDidChangeContent((event) => {
@@ -48,6 +49,8 @@ window.addEventListener('load', (event) => {
       fontSize: 20,
       wordWrap: true,
       folding: false,
+      lineDecorationsWidth: 30,
+      renderIndentGuides: false,
     });
     inputEditor.setModel(inputSession);
     inputSession.onDidChangeContent((event) => {
@@ -62,6 +65,8 @@ window.addEventListener('load', (event) => {
       fontSize: 20,
       wordWrap: true,
       folding: false,
+      lineDecorationsWidth: 30,
+      renderIndentGuides: false,
     });
     outputEditor.setModel(outputSession);
     outputSession.onDidChangeContent((event) => {
