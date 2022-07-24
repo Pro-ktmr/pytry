@@ -1,3 +1,10 @@
+* {
+  -moz-user-select: -moz-none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
 html,
 body {
   width: 100%;
@@ -93,6 +100,38 @@ h3 {
   background: #eee;
 }
 
+.insert-buttons {
+  white-space: nowrap;
+  overflow-x: scroll;
+  padding: 1px;
+  margin: 0 1em 12px 1em;
+  scrollbar-width: none;
+}
+
+.insert-buttons::-webkit-scrollbar {
+  display: none;
+}
+
+.insert-button {
+  border: 1px solid #ddd;
+  border-radius: 2px;
+  background: #ffe;
+  font-size: 12px;
+  line-height: 12px;
+  padding: 2px 4px;
+  vertical-align: middle;
+  cursor: pointer;
+}
+
+.insert-button:hover {
+  background: #eed;
+}
+
+.insert-button pre {
+  display: inline;
+  font-family: 'Consolas';
+}
+
 #container {
   width: 100%;
   height: calc(100% - 48pt);
@@ -101,8 +140,7 @@ h3 {
 
 #editor {
   width: 100%;
-  height: calc(100% - 40px);
-  ;
+  height: calc(100% - 78px);
 }
 
 #left-column {

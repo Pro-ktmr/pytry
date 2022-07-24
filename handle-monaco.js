@@ -80,3 +80,55 @@ document.addEventListener('keydown', (event) => {
     event.preventDefault();
   }
 });
+
+function copyFromSource() {
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(editor.getValue());
+  }
+}
+
+function pasteToInput() {
+  if (navigator.clipboard) {
+    navigator.clipboard.readText()
+      .then(function (text) {
+        inputEditor.setValue(text);
+      });
+    inputEditor.focus();
+  }
+}
+
+function insert_int_input() {
+  const selection = editor.getSelection();
+  const id = { major: 1, minor: 1 };
+  const text = 'int(input())';
+  const op = { identifier: id, range: selection, text: text, forceMoveMarkers: true };
+  editor.executeEdits('insertion-helper', [op]);
+  editor.focus();
+}
+
+function insert_map_int_input_split() {
+  const selection = editor.getSelection();
+  const id = { major: 1, minor: 1 };
+  const text = 'map(int, input().split())';
+  const op = { identifier: id, range: selection, text: text, forceMoveMarkers: true };
+  editor.executeEdits('insertion-helper', [op]);
+  editor.focus();
+}
+
+function insert_input() {
+  const selection = editor.getSelection();
+  const id = { major: 1, minor: 1 };
+  const text = 'input()';
+  const op = { identifier: id, range: selection, text: text, forceMoveMarkers: true };
+  editor.executeEdits('insertion-helper', [op]);
+  editor.focus();
+}
+
+function insert_list_map_int_input_split() {
+  const selection = editor.getSelection();
+  const id = { major: 1, minor: 1 };
+  const text = 'list(map(int, input().split()))';
+  const op = { identifier: id, range: selection, text: text, forceMoveMarkers: true };
+  editor.executeEdits('insertion-helper', [op]);
+  editor.focus();
+}
