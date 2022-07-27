@@ -177,33 +177,36 @@ function searchWarnings() {
 
     // コロン忘れ
     if (line.match(/^\s*if\s[^:]*$/g) !== null) {
-      res += `${i + 1} 行目の if の後のコロンを忘れていませんか？\n`;
+      res += `${i + 1} 行目の「if 条件式:」の末尾のコロンを忘れていませんか？\n`;
     }
     if (line.match(/^\s*elif\s[^:]*$/g) !== null) {
-      res += `${i + 1} 行目の elif の後のコロンを忘れていませんか？\n`;
+      res += `${i + 1} 行目の「elif 条件式:」の末尾のコロンを忘れていませんか？\n`;
+    }
+    if (line.match(/^\s*elif\s*:/g) !== null) {
+      res += `${i + 1} 行目は「elif 条件式:」か「else:」のいずれかではありませんか？\n`;
     }
     if (line.match(/^\s*else\s[^:]*$/g) !== null) {
-      res += `${i + 1} 行目の else の後のコロンを忘れていませんか？\n`;
+      res += `${i + 1} 行目の「else:」の末尾のコロンを忘れていませんか？\n`;
     }
     if (line.match(/^\s*for\s[^:]*$/g) !== null) {
-      res += `${i + 1} 行目の for の後のコロンを忘れていませんか？\n`;
+      res += `${i + 1} 行目の「for 変数名 in range(繰り返し回数):」の末尾のコロンを忘れていませんか？\n`;
     }
     if (line.match(/^\s*while\s[^:]*$/g) !== null) {
-      res += `${i + 1} 行目の while の後のコロンを忘れていませんか？\n`;
+      res += `${i + 1} 行目の「while 条件式:」の末尾のコロンを忘れていませんか？\n`;
     }
 
     // 比較演算子
     if (line.match(/=>/g) !== null) {
-      res += `${i + 1} 行目の => は >= ではないですか？\n`;
+      res += `${i + 1} 行目の => は >= ではありませんか？\n`;
     }
     if (line.match(/=</g) !== null) {
-      res += `${i + 1} 行目の =< は <= ではないですか？\n`;
+      res += `${i + 1} 行目の =< は <= ではありませんか？\n`;
     }
     if (line.match(/=!/g) !== null) {
-      res += `${i + 1} 行目の =! は != ではないですか？\n`;
+      res += `${i + 1} 行目の =! は != ではありませんか？\n`;
     }
     if (line.match(/(if|while)[^=]*=[^=]/g) !== null && line.match(/>=|<=|!=|=>|=<|=!/g) == null) {
-      res += `${i + 1} 行目の = は == ではないですか？\n`;
+      res += `${i + 1} 行目の = は == ではありませんか？\n`;
     }
   }
   if (res == '') return '';
