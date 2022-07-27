@@ -162,5 +162,46 @@ function formatErrorMessage(original) {
   formatted = formatted.replaceAll('NoneType', '値ではないもの');
   formatted = formatted.replaceAll('builtin_function_or_method', '組み込み関数');
 
-  return `\n${formatted}\n=== エラー原文 ===\n${original}==================`;
+  return `\n${formatted}${searchWarnings()}\n=== エラー原文 ===\n${original}==================`;
+}
+
+function searchWarnings() {
+  let res = '';
+  const lines = editor.getValue().split('\n');
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+
+    // コロン忘れ
+    if (line.match(/^\s*if\s[^:]*$/g) !== null) {
+      res += `${i + 1} 行目の if の後のコロンを忘れていませんか？\n`;
+    }
+    if (line.match(/^\s*elif\s[^:]*$/g) !== null) {
+      res += `${i + 1} 行目の elif の後のコロンを忘れていませんか？\n`;
+    }
+    if (line.match(/^\s*else\s[^:]*$/g) !== null) {
+      res += `${i + 1} 行目の else の後のコロンを忘れていませんか？\n`;
+    }
+    if (line.match(/^\s*for\s[^:]*$/g) !== null) {
+      res += `${i + 1} 行目の for の後のコロンを忘れていませんか？\n`;
+    }
+    if (line.match(/^\s*while\s[^:]*$/g) !== null) {
+      res += `${i + 1} 行目の while の後のコロンを忘れていませんか？\n`;
+    }
+
+    // 比較演算子
+    if (line.match(/=>/g) !== null) {
+      res += `${i + 1} 行目の => は >= ではないですか？\n`;
+    }
+    if (line.match(/=</g) !== null) {
+      res += `${i + 1} 行目の =< は <= ではないですか？\n`;
+    }
+    if (line.match(/=!/g) !== null) {
+      res += `${i + 1} 行目の =! は != ではないですか？\n`;
+    }
+    if (line.match(/(if|while)[^=]*=[^=]/g) !== null && line.match(/>=|<=|!=|=>|=<|=!/g) == null) {
+      res += `${i + 1} 行目の = は == ではないですか？\n`;
+    }
+  }
+  if (res == '') return '';
+  return `\n提案：\n${res}(提案は間違っていることもあります)\n`;
 }
