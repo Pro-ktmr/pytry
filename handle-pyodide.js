@@ -65,6 +65,7 @@ function workerListenner(msg) {
 
 function cancelRunning() {
   outputEditor.setValue('実行から 10 秒が経過したため処理を打ち切りました\n次に実行できるようになるまで数秒かかります');
+  sendSubmission(editor.getValue(), inputEditor.getValue(), outputEditor.getValue(), '');
   worker.terminate();
   initializeWorker();
 }
