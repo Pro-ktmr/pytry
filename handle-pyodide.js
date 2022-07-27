@@ -163,6 +163,9 @@ function formatErrorMessage(original) {
   formatted = formatted.replaceAll('NoneType', '値ではないもの');
   formatted = formatted.replaceAll('builtin_function_or_method', '組み込み関数');
 
+  // その他
+  formatted = formatted.replaceAll(/ModuleNotFoundError: No module named '(.*)'/g, 'モジュールエラー: 「$1」というモジュールが見つかりません (micropip でインストールできるかもしれません)');
+
   return `\n${formatted}${searchWarnings()}\n=== エラー原文 ===\n${original}==================`;
 }
 

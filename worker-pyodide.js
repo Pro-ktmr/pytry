@@ -5,8 +5,9 @@ async function load() {
     indexURL: location.href.slice(0, location.href.length - '/worker-pyodide.js'.length) + '/pyodide',
   });
   await pyodide.loadPackage('numpy');
+  await pyodide.loadPackage('micropip');
   await pyodide.runPython(`
-import io, sys, traceback
+import io, sys, traceback, micropip
 
 def __run(code, input):
     my_in = io.StringIO(input)
