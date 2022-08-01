@@ -38,6 +38,7 @@ window.addEventListener('load', (event) => {
       unicodeHighlight: {
         nonBasicASCII: true,
       },
+      renderWhitespace: 'all',
     });
     editor.setModel(session);
     session.onDidChangeContent((event) => {
@@ -76,6 +77,37 @@ window.addEventListener('load', (event) => {
       localStorage.setItem('output_text', encodeURIComponent(outputEditor.getValue()));
     });
   });
+
+  setInterval(function () {
+    const highlighter = document.getElementById('highlighter');
+    highlighter.innerHTML = '';
+
+    const tags = document.getElementsByTagName('span');
+    const patterns = [
+      ['list', '(', 'map', '(', 'int', ',', '·', 'input', '(', ')', '.split', '(', ')', ')', ')'],
+      ['map', '(', 'int', ',', '·', 'input', '(', ')', '.split', '(', ')', ')'],
+      ['int', '(', 'input', '(', ')', ')'],
+      ['input', '(', ')'],
+    ];
+
+    for (let i = 0; i < tags.length; i++) {
+      for (const pattern of patterns) {
+        let ok = true;
+        for (let j = 0; j < pattern.length; j++) {
+          ok &= i + j < tags.length && pattern[j] == tags[i + j].innerHTML;
+        }
+        if (ok) {
+          const left = window.pageXOffset + tags[i].getBoundingClientRect().left;
+          const top = window.pageYOffset + tags[i].getBoundingClientRect().top;
+          const right = window.pageXOffset + tags[i + pattern.length - 1].getBoundingClientRect().right;
+          const bottom = window.pageYOffset + tags[i + pattern.length - 1].getBoundingClientRect().bottom;
+          highlighter.innerHTML += `<span class="stdin-highlight" style="left: ${left}px; top: ${top}px; width: ${right - left}px; height: ${bottom - top}px;"></span>`;
+          i += pattern.length - 1;
+          break;
+        }
+      }
+    }
+  }, 10);
 });
 
 document.addEventListener('keydown', (event) => {
