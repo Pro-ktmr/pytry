@@ -104,9 +104,11 @@ h3 {
 .insert-buttons {
   white-space: nowrap;
   overflow-x: scroll;
-  padding: 1px;
-  margin: 0 1em 12px 1em;
+  overflow-y: hidden;
+  padding: 0 1em 12px 1em;
   scrollbar-width: none;
+  background: white;
+  z-index: 1;
 }
 
 .insert-buttons::-webkit-scrollbar {
@@ -253,7 +255,7 @@ h3 {
 .stdin-highlight {
   position: absolute;
   background: #FFF67F;
-  z-index: 0;
+  z-index: -2;
 }
 
 .stdin-highlight::after {
@@ -265,5 +267,4 @@ h3 {
   height: 100%;
   box-sizing: border-box;
   border: 1px solid #888;
-  z-index: 1;
 }
