@@ -24,6 +24,8 @@ window.addEventListener('load', (event) => {
   }
 
   require(['vs/editor/editor.main'], function () {
+    monaco.languages.registerOnTypeFormattingEditProvider('python', new PyTryOnTypeFormattingEditProvider());
+
     session = monaco.editor.createModel(source_text, 'python');
     editor = monaco.editor.create(document.getElementById('editor'), {
       minimap: { enabled: false },
@@ -32,6 +34,7 @@ window.addEventListener('load', (event) => {
       fontSize: 20,
       wordWrap: true,
       renderIndentGuides: true,
+      scrollBeyondLastLine: false,
       folding: false,
       'bracketPairColorization.enabled': true,
       lineDecorationsWidth: 30,
@@ -39,6 +42,7 @@ window.addEventListener('load', (event) => {
         nonBasicASCII: true,
       },
       renderWhitespace: 'all',
+      formatOnType: true,
     });
     editor.setModel(session);
     session.onDidChangeContent((event) => {
@@ -52,6 +56,7 @@ window.addEventListener('load', (event) => {
       renderControlCharacters: true,
       fontSize: 20,
       wordWrap: true,
+      scrollBeyondLastLine: false,
       folding: false,
       lineDecorationsWidth: 30,
       renderIndentGuides: false,
@@ -68,9 +73,11 @@ window.addEventListener('load', (event) => {
       renderControlCharacters: true,
       fontSize: 20,
       wordWrap: true,
+      scrollBeyondLastLine: false,
       folding: false,
       lineDecorationsWidth: 30,
       renderIndentGuides: false,
+      readOnly: true,
     });
     outputEditor.setModel(outputSession);
     outputSession.onDidChangeContent((event) => {
@@ -78,37 +85,58 @@ window.addEventListener('load', (event) => {
     });
   });
 
-  setInterval(function () {
-    const highlighter = document.getElementById('highlighter');
-    highlighter.innerHTML = '';
+  const editor_dom = document.getElementById('editor');
+  const obs = new MutationObserver(updateStdinHighlighter);
+  obs.observe(editor_dom, {
+    childList: true,
+    characterData: true,
+    characterDataOldValue: true,
+    attributes: true,
+    subtree: true,
+  });
+  updateStdinHighlighter();
+});
 
-    const tags = document.getElementsByTagName('span');
-    const patterns = [
-      ['list', '(', 'map', '(', 'int', ',', '·', 'input', '(', ')', '.split', '(', ')', ')', ')'],
-      ['map', '(', 'int', ',', '·', 'input', '(', ')', '.split', '(', ')', ')'],
-      ['int', '(', 'input', '(', ')', ')'],
-      ['input', '(', ')'],
-    ];
+function updateStdinHighlighter() {
+  const editor = document.getElementById('editor');
+  const editor_left = window.pageXOffset + editor.getBoundingClientRect().left;
+  const editor_top = window.pageYOffset + editor.getBoundingClientRect().top;
+  const editor_right = window.pageXOffset + editor.getBoundingClientRect().right;
+  const editor_bottom = window.pageYOffset + editor.getBoundingClientRect().bottom;
 
-    for (let i = 0; i < tags.length; i++) {
-      for (const pattern of patterns) {
-        let ok = true;
-        for (let j = 0; j < pattern.length; j++) {
-          ok &= i + j < tags.length && pattern[j] == tags[i + j].innerHTML;
-        }
-        if (ok) {
-          const left = window.pageXOffset + tags[i].getBoundingClientRect().left;
-          const top = window.pageYOffset + tags[i].getBoundingClientRect().top;
-          const right = window.pageXOffset + tags[i + pattern.length - 1].getBoundingClientRect().right;
-          const bottom = window.pageYOffset + tags[i + pattern.length - 1].getBoundingClientRect().bottom;
-          highlighter.innerHTML += `<span class="stdin-highlight" style="left: ${left}px; top: ${top}px; width: ${right - left}px; height: ${bottom - top}px;"></span>`;
-          i += pattern.length - 1;
-          break;
-        }
+  const highlighter = document.getElementById('highlighter');
+  highlighter.innerHTML = '';
+  highlighter.style.left = editor_left + 'px';
+  highlighter.style.top = editor_top + 'px';
+  highlighter.style.width = (editor_right - editor_left) + 'px';
+  highlighter.style.height = (editor_bottom - editor_top) + 'px';
+
+  const tags = document.getElementsByTagName('span');
+  const patterns = [
+    ['list', '(', 'map', '(', 'int', ',', '·', 'input', '(', ')', '.split', '(', ')', ')', ')'],
+    ['map', '(', 'int', ',', '·', 'input', '(', ')', '.split', '(', ')', ')'],
+    ['int', '(', 'input', '(', ')', ')'],
+    ['input', '(', ')'],
+  ];
+
+  for (let i = 0; i < tags.length; i++) {
+    for (const pattern of patterns) {
+      let ok = true;
+      for (let j = 0; j < pattern.length; j++) {
+        ok &= i + j < tags.length && pattern[j] == tags[i + j].innerHTML;
+      }
+      if (ok) {
+        const left = window.pageXOffset + tags[i].getBoundingClientRect().left - editor_left;
+        const top = window.pageYOffset + tags[i].getBoundingClientRect().top - editor_top + 1;
+        const right = window.pageXOffset + tags[i + pattern.length - 1].getBoundingClientRect().right - editor_left;
+        const bottom = window.pageYOffset + tags[i + pattern.length - 1].getBoundingClientRect().bottom - editor_top;
+        highlighter.innerHTML += `<span class="stdin-highlight" style="left: ${left}px; top: ${top}px; width: ${right - left}px; height: ${bottom - top}px;"></span>`;
+        i += pattern.length - 1;
+        break;
       }
     }
-  }, 10);
-});
+  }
+}
 
 document.addEventListener('keydown', (event) => {
   if (event.ctrlKey && event.key === 's') {

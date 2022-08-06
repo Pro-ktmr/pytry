@@ -1,3 +1,7 @@
+.monaco-editor {
+  --vscode-editorUnicodeHighlight-border: #d63031 !important;
+}
+
 html,
 body {
   width: 100%;
@@ -43,14 +47,29 @@ h1 {
   cursor: pointer;
 }
 
-.help-button .content {
+.config-button {
+  display: inline-block;
+  margin: auto;
+  margin-left: 12px;
+  padding: 0;
+  font-size: 22px;
+  line-height: 24px;
+  width: 24px;
+  height: 24px;
+  text-align: center;
+  vertical-align: middle;
+  color: black;
+  cursor: pointer;
+}
+
+.fold-button .content {
   display: none;
 }
 
-.help-button:hover .content {
+.fold-button:hover .content {
   display: block;
   position: relative;
-  top: 8px;
+  top: 0px;
   width: 320px;
   padding: 24px;
   z-index: 10000;
@@ -58,6 +77,7 @@ h1 {
   color: white;
   text-align: left;
   font-weight: normal;
+  line-height: 150%;
 }
 
 .h1-button {
@@ -246,10 +266,71 @@ h3 {
   display: inline-block;
 }
 
+.toggle_input {
+  display: inline-block;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  z-index: 5;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.toggle_label {
+  width: 54px;
+  height: 32px;
+  background: #fff;
+  border: 2px solid #eee;
+  position: relative;
+  display: inline-block;
+  border-radius: 16px;
+  transition: 0.4s;
+  box-sizing: border-box;
+}
+
+.toggle_label:after {
+  content: "";
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  border-radius: 100%;
+  left: 2px;
+  top: 2px;
+  z-index: 2;
+  background: #eee;
+  transition: 0.4s;
+}
+
+.toggle_input:checked+.toggle_label {
+  border: 2px solid #4BD865;
+}
+
+.toggle_input:checked+.toggle_label:after {
+  left: 24px;
+  background: #4BD865;
+}
+
+.toggle_button {
+  display: inline-block;
+  position: relative;
+  width: 54px;
+  height: 32px;
+  margin: auto;
+  vertical-align: text-top;
+}
+
 .monaco-editor,
 .monaco-editor-background,
 .monaco-editor .inputarea.ime-input {
   background-color: rgba(0, 0, 0, 0) !important;
+}
+
+#highlighter {
+  position: absolute;
+  overflow: hidden;
 }
 
 .stdin-highlight {

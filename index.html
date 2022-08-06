@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
   <link href="./style.css" rel="stylesheet">
+  <script src="./pyodide/pyodide.js"></script>
   <script src="./handle-pyodide.js"></script>
   <script src="./monaco-editor/min/vs/loader.js"></script>
   <script src="./handle-monaco.js"></script>
@@ -21,12 +22,12 @@
   </script>
   <title>PyTry | 初心者のための Python 開発環境</title>
   <meta name="description"
-    content="PyTry は競技プログラミング初心者のための Python 開発環境です．日本語エラーメッセージ，標準入力を読み込むコードのワンクリック入力，ソースコード自動保存などの便利機能を搭載しています！">
+    content="PyTry は競技プログラミング初心者のための Python 開発環境です．日本語エラーメッセージ，標準入力を読み込むコードのワンクリック入力，ソースコード自動保存，オートフォーマットなどの便利機能を搭載しています！">
   <meta property="og:url" content="https://pro-ktmr.github.io/pytry/" />
   <meta property="og:type" content="article" />
   <meta property="og:title" content="PyTry | 初心者のための Python 開発環境" />
   <meta property="og:description"
-    content="PyTry は競技プログラミング初心者のための Python 開発環境です．日本語エラーメッセージ，標準入力を読み込むコードのワンクリック入力，ソースコード自動保存などの便利機能を搭載しています！" />
+    content="PyTry は競技プログラミング初心者のための Python 開発環境です．日本語エラーメッセージ，標準入力を読み込むコードのワンクリック入力，ソースコード自動保存，オートフォーマットなどの便利機能を搭載しています！" />
   <meta property="og:image" content="https://pro-ktmr.github.io/pytry/ogp.png" />
   <meta property="og:site_name" content="PyTry | 初心者のための Python 開発環境" />
   <meta name="twitter:card" content="summary_large_image" />
@@ -37,8 +38,22 @@
 
 <body>
   <div id="highlighter"></div>
-  <h1>PyTry | 初心者のための Python 開発環境 <span class="help-button">？<div class="content">PyTry は競技プログラミング初心者のための Python
-        開発環境です．日本語エラーメッセージ，標準入力を読み込むコードのワンクリック入力，ソースコード自動保存などの便利機能を搭載しています！</div></span></h1>
+  <h1>PyTry | 初心者のための Python 開発環境
+    <span class="help-button fold-button">？
+      <div class="content">
+        PyTry は競技プログラミング初心者のための Python
+        開発環境です．日本語エラーメッセージ，標準入力を読み込むコードのワンクリック入力，ソースコード自動保存，オートフォーマットなどの便利機能を搭載しています！
+      </div>
+    </span>
+    <span class="config-button fold-button">⚙️
+      <div class="content">
+        オートフォーマット：<div class="toggle_button">
+          <input id="toggle_auto_format" class="toggle_input" type="checkbox" checked />
+          <label for="toggle_auto_format" class="toggle_label"></label>
+        </div>
+      </div>
+    </span>
+  </h1>
   <span id="run-button" class="h1-button unselectable" onclick="run()"></span>
   <div id="container">
     <div id="left-column">
