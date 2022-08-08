@@ -24,7 +24,7 @@ window.addEventListener('load', (event) => {
   }
 
   require(['vs/editor/editor.main'], function () {
-    monaco.languages.registerOnTypeFormattingEditProvider('python', new PyTryOnTypeFormattingEditProvider());
+    //monaco.languages.registerOnTypeFormattingEditProvider('python', new PyTryOnTypeFormattingEditProvider());
 
     session = monaco.editor.createModel(source_text, 'python');
     editor = monaco.editor.create(document.getElementById('editor'), {
