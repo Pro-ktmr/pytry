@@ -91,7 +91,7 @@ async function run(source, input) {
   }
 
   self.postMessage({
-    kind: 'ready',
+    kind: 'done',
     content: '',
   });
 }

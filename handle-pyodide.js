@@ -60,6 +60,12 @@ function workerListenner(msg) {
     return;
   }
 
+  if (kind == 'done') {
+    if (timer) clearTimeout(timer);
+    enableReady();
+    return;
+  }
+
   if (kind == 'internal_error') {
     const error = msg.data['content'];
     outputEditor.setValue(outputEditor.getValue() + error);
