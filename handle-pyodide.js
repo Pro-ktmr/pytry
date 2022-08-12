@@ -30,6 +30,7 @@ async function run() {
     outputEditor.revealLine(0);
     editor.markers = [];
     monaco.editor.setModelMarkers(editor.getModel(), 'message', editor.markers);
+    latestFormatErrorMessage = '';
 
     const formatted = await formatSource(editor.getValue());
     if (formatted != editor.getValue()) {
@@ -51,6 +52,7 @@ async function run() {
   }
 }
 
+let latestFormatErrorMessage = '';
 function workerListenner(msg) {
   const kind = msg.data['kind'];
 
@@ -63,6 +65,7 @@ function workerListenner(msg) {
   if (kind == 'done') {
     if (timer) clearTimeout(timer);
     enableReady();
+    sendSubmission(editor.getValue(), inputEditor.getValue(), outputEditor.getValue(), latestFormatErrorMessage);
     return;
   }
 
@@ -97,7 +100,7 @@ function workerListenner(msg) {
       monaco.editor.setModelMarkers(editor.getModel(), 'message', editor.markers);
     }
 
-    sendSubmission(editor.getValue(), inputEditor.getValue(), outputEditor.getValue(), formatErrorMessage(error));
+    latestFormatErrorMessage = formatErrorMessage(error);
   }
 }
 
