@@ -10,30 +10,12 @@ window.addEventListener('load', (event) => {
   initializeWorker();
 });
 
-async function loadFormatter() {
-  const pyodide = await loadPyodide({
-    indexURL: location.href + '/pyodide',
-  });
-  await pyodide.loadPackage('micropip');
-  await pyodide.runPythonAsync(`
-import micropip
-await micropip.install('black')
-import black
-def __format(code):
-    try:
-        return black.format_str(code, mode=black.FileMode())
-    except black.parsing.InvalidInput:
-        return code`);
-  self.postMessage('ready');
-  return pyodide;
-}
-const foratterReadyPromise = loadFormatter();
-
 function disableReady() {
   ready = false;
   document.getElementById('run-button').innerHTML = '<div class="loader-inner ball-pulse"><div></div><div></div><div></div></div>';
   document.getElementById('run-button').classList.remove('pushable');
 }
+
 function enableReady() {
   ready = true;
   document.getElementById('run-button').innerHTML = '実行';
@@ -45,6 +27,9 @@ let timer;
 async function run() {
   if (ready) {
     outputEditor.setValue('');
+    outputEditor.revealLine(0);
+    editor.markers = [];
+    monaco.editor.setModelMarkers(editor.getModel(), 'message', editor.markers);
 
     const formatted = await formatSource(editor.getValue());
     if (formatted != editor.getValue()) {
@@ -62,94 +47,66 @@ async function run() {
 
     disableReady();
     timer = setTimeout(cancelRunning, 10000);
-    worker.postMessage([editor.getValue(), inputEditor.getValue()]);
+    worker.postMessage([editor.getValue(), inputEditor.getValue().replaceAll('\r', '')]);
   }
 }
 
 function workerListenner(msg) {
-  enableReady();
-  if (msg.data == 'ready') return;
-  clearTimeout(timer);
+  const kind = msg.data['kind'];
 
-  const output = msg.data[0];
-  const error = msg.data[1];
-  const mergedOutput = output + formatErrorMessage(error);
-
-  outputEditor.setValue(mergedOutput);
-  outputEditor.revealLine(0);
-  let err = [...mergedOutput.matchAll(/プログラムの (\d*) 行目/g)];
-  if (err != null && err.length != 0) {
-    let l = Number(err[err.length - 1][1]);
-    editor.markers = [{
-      startLineNumber: l,
-      startColumn: 1,
-      endLineNumber: l,
-      endColumn: 1000,
-      message: mergedOutput,
-      severity: monaco.MarkerSeverity.Error,
-    }];
-    monaco.editor.setModelMarkers(editor.getModel(), 'message', editor.markers);
-  }
-  else {
-    editor.markers = [];
-    monaco.editor.setModelMarkers(editor.getModel(), 'message', editor.markers);
+  if (kind == 'ready') {
+    if (timer) clearTimeout(timer);
+    enableReady();
+    return;
   }
 
-  sendSubmission(editor.getValue(), inputEditor.getValue(), output, formatErrorMessage(error));
+  if (kind == 'internal_error') {
+    const error = msg.data['content'];
+    outputEditor.setValue(outputEditor.getValue() + error);
+    if (timer) clearTimeout(timer);
+    enableReady();
+    return;
+  }
+
+  if (kind == 'stdout') {
+    const output = msg.data['content'];
+    outputEditor.setValue(outputEditor.getValue() + output);
+  }
+
+  if (kind == 'error') {
+    const error = msg.data['content'];
+    outputEditor.setValue(outputEditor.getValue() + formatErrorMessage(error));
+
+    let err = [...formatErrorMessage(error).matchAll(/プログラムの (\d*) 行目/g)];
+    if (err != null && err.length != 0) {
+      let l = Number(err[err.length - 1][1]);
+      editor.markers = [{
+        startLineNumber: l,
+        startColumn: 1,
+        endLineNumber: l,
+        endColumn: 1000,
+        message: formatErrorMessage(error),
+        severity: monaco.MarkerSeverity.Error,
+      }];
+      monaco.editor.setModelMarkers(editor.getModel(), 'message', editor.markers);
+    }
+
+    sendSubmission(editor.getValue(), inputEditor.getValue(), outputEditor.getValue(), formatErrorMessage(error));
+  }
 }
 
 function cancelRunning() {
   outputEditor.setValue('実行から 10 秒が経過したため処理を打ち切りました\n次に実行できるようになるまで数秒かかります');
+  outputEditor.setValue(outputEditor.getValue() + '実行から 10 秒が経過したため処理を打ち切りました\n次に実行できるようになるまで数秒かかります\n');
   sendSubmission(editor.getValue(), inputEditor.getValue(), outputEditor.getValue(), '');
   worker.terminate();
   initializeWorker();
 }
 
-function sendSubmission(source, input, output, error) {
-  const param = {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json; charset=utf-8'
-    },
-    body: JSON.stringify({
-      time: getTime(),
-      source: JSON.stringify(source.substr(0, 5000)),
-      input: JSON.stringify(input.substr(0, 5000)),
-      output: JSON.stringify(output.substr(0, 5000)),
-      error: JSON.stringify(error.substr(0, 5000)),
-    }),
-    credentials: 'include',
-  };
-  fetch('https://ktmr.vsw.jp/pytry/run.php', param)
-    .then(response => response.json())
-    .then(json => {
-      if (!json.status) {
-        console.log(`${json.result}`);
-      }
-    })
-    .catch(error => {
-      console.log(`${error}`);
-    });
-}
-
-function getTime() {
-  var date = new Date();
-  var y = date.getFullYear();
-  var mo = ('00' + (date.getMonth() + 1)).slice(-2);
-  var d = ('00' + date.getDate()).slice(-2);
-  var h = ('00' + date.getHours()).slice(-2);
-  var mi = ('00' + date.getMinutes()).slice(-2);
-  var s = ('00' + date.getSeconds()).slice(-2);
-  var ms = ('000' + date.getMilliseconds()).slice(-3);
-  return y + '-' + mo + '-' + d + '_' + h + '-' + mi + '-' + s + '-' + ms;
-}
+/* Error handler */
 
 function formatErrorMessage(original) {
   if (original == '') return '';
-
-  // オリジナル
-  original = original.replaceAll(/(.*)File "<exec>"(.*)\n/g, '');
-  original = original.replaceAll(/(.*)File "<string>", line (\d*)(.*)\n/g, '$1File "Main.py", line $2$3\n');
 
   let formatted = original;
 
@@ -248,6 +205,27 @@ function searchWarnings() {
   return `\n提案：\n${res}(提案は間違っていることもあります)\n`;
 }
 
+/* Formatter */
+
+async function loadFormatter() {
+  const pyodide = await loadPyodide({
+    indexURL: location.href + '/pyodide',
+  });
+  await pyodide.loadPackage('micropip');
+  await pyodide.runPythonAsync(`
+import micropip
+await micropip.install('black')
+import black
+def __format(code):
+    try:
+        return black.format_str(code, mode=black.FileMode())
+    except black.parsing.InvalidInput:
+        return code`);
+  self.postMessage('ready');
+  return pyodide;
+}
+const foratterReadyPromise = loadFormatter();
+
 async function formatSource(source) {
   if (!document.getElementById('toggle_auto_format').checked) {
     return source;
@@ -287,4 +265,45 @@ class PyTryOnTypeFormattingEditProvider {
       text: formatted,
     }];
   }
+}
+
+/* Send */
+
+function sendSubmission(source, input, output, error) {
+  const param = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json; charset=utf-8'
+    },
+    body: JSON.stringify({
+      time: getTime(),
+      source: JSON.stringify(source.substr(0, 5000)),
+      input: JSON.stringify(input.substr(0, 5000)),
+      output: JSON.stringify(output.substr(0, 5000)),
+      error: JSON.stringify(error.substr(0, 5000)),
+    }),
+    credentials: 'include',
+  };
+  fetch('https://ktmr.vsw.jp/pytry/run.php', param)
+    .then(response => response.json())
+    .then(json => {
+      if (!json.status) {
+        console.log(`${json.result}`);
+      }
+    })
+    .catch(error => {
+      console.log(`${error}`);
+    });
+}
+
+function getTime() {
+  var date = new Date();
+  var y = date.getFullYear();
+  var mo = ('00' + (date.getMonth() + 1)).slice(-2);
+  var d = ('00' + date.getDate()).slice(-2);
+  var h = ('00' + date.getHours()).slice(-2);
+  var mi = ('00' + date.getMinutes()).slice(-2);
+  var s = ('00' + date.getSeconds()).slice(-2);
+  var ms = ('000' + date.getMilliseconds()).slice(-3);
+  return y + '-' + mo + '-' + d + '_' + h + '-' + mi + '-' + s + '-' + ms;
 }
