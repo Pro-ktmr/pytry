@@ -57,7 +57,7 @@ function stdout_callback(message) {
 
 function python_error(message) {
   message = message.replaceAll(
-    /Traceback \(most recent call last\):\n[\s\S]*  File "<exec>", line (\d*).*\n/g,
+    /Traceback \(most recent call last\):\n[\s\S]*  File "<string>", line (\d*).*\n/g,
     `Traceback (most recent call last):
   File "Main.py", line $1
 `);
@@ -73,7 +73,8 @@ async function run(source, input) {
 
   const pyodide = await pyodideReadyPromise;
   try {
-    await pyodide.runPython(source);
+    pyodide.globals.set('__code_to_run', source);
+    await pyodide.runPython(`exec(__code_to_run, {})`);
     await pyodide.runPython(`print('<eof>')`);
     await pyodide.runPython(`print('<eof>', file=sys.stderr)`);
   } catch (e) {
