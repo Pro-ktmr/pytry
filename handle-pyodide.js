@@ -135,21 +135,26 @@ function formatErrorMessage(original) {
   formatted = formatted.replaceAll('EOFError: EOF when reading a line', 'ファイル末尾エラー: ファイルの末尾に到達しました (入力の受け取り方や入力欄が正しくないことがあります)');
 
   // 存在しない
-  formatted = formatted.replaceAll(/NameError: name '(.*)' is not defined/g, '名前エラー: 「$1」が見つかりません');
+  formatted = formatted.replaceAll(/NameError: name '(.*)' is not defined/g, '名前エラー: 「$1」が見つかりません (小文字と大文字は区別します)');
   formatted = formatted.replaceAll('IndexError: string index out of range', '添え字エラー: 文字列の長さ以上の添え字の文字にアクセスしようとしました');
   formatted = formatted.replaceAll('IndexError: list index out of range', '添え字エラー: リストのサイズ以上の添え字の要素にアクセスしようとしました');
   formatted = formatted.replaceAll(/KeyError: '(.*)'/g, 'キーエラー: キー「$1」は存在しません');
   formatted = formatted.replaceAll(/AttributeError: '(.*)' object has no attribute '(.*)'/g, '属性エラー: 「$1」のオブジェクトに「$2」という属性は存在しません');
 
   // 文法
+  formatted = formatted.replaceAll("SyntaxError: invalid syntax. Maybe you meant '==' or ':=' instead of '='?", '文法エラー: 文法が間違っています (比較のイコールは == です)');
   formatted = formatted.replaceAll('SyntaxError: invalid syntax', '文法エラー: 文法が間違っています');
-  formatted = formatted.replaceAll('SyntaxError: cannot assign to operator', '文法エラー: 代入時の左辺に演算子は使えません');
+  formatted = formatted.replaceAll('SyntaxError: cannot assign to operator', '文法エラー: 代入のイコールの左辺に演算子は使えません');
+  formatted = formatted.replaceAll("SyntaxError: cannot assign to expression here. Maybe you meant '==' instead of '='?", '文法エラー: 代入のイコールの左辺に式は使えません (比較のイコールは == です)');
+  formatted = formatted.replaceAll(/SyntaxError: expected '(.*)'/g, '文法エラー: 「$1」が必要です');
   formatted = formatted.replaceAll('SyntaxError: EOL while scanning string literal', '文法エラー: 文字列の終わりのクオーテーションが見つかりません');
   formatted = formatted.replaceAll(/SyntaxError: invalid character '(.*)' \((.*)\)/g, '文法エラー: 「$1」という文字は使えません (誤って全角文字を使っていることがあります)');
   formatted = formatted.replaceAll('SyntaxError: unexpected EOF while parsing', '文法エラー: 括弧などを閉じないまま行が終わってしまいました');
+  formatted = formatted.replaceAll(/SyntaxError: unmatched '(.*)'/g, '文法エラー: 「$1」の開きと閉じが対応していません');
 
   // 演算
   formatted = formatted.replaceAll('ZeroDivisionError: division by zero', 'ゼロ除算エラー: ゼロで割ろうとしました');
+  formatted = formatted.replaceAll('ZeroDivisionError: integer division or modulo by zero', 'ゼロ除算エラー: ゼロで割ろうとしました');
   formatted = formatted.replaceAll(/TypeError: unsupported operand type\(s\) for (.*): '(.*)' and '(.*)'/g, '型エラー: 「$2」と「$3」の間で「$1」の計算はできません');
   formatted = formatted.replaceAll(/TypeError: '(.*)' not supported between instances of '(.*)' and '(.*)'/g, '型エラー: 「$2」と「$3」の間で「$1」の計算はできません');
 
@@ -187,6 +192,9 @@ function searchWarnings() {
     }
     if (line.match(/^\s*else\s[^:]*$/g) !== null) {
       res += `${i + 1} 行目の「else:」の末尾のコロンを忘れていませんか？\n`;
+    }
+    if (line.match(/^\s*else\s[^:]+:$/g) !== null) {
+      res += `${i + 1} 行目は「elif 条件式:」ではありませんか？\n`;
     }
     if (line.match(/^\s*for\s[^:]*$/g) !== null) {
       res += `${i + 1} 行目の「for 変数名 in range(繰り返し回数):」の末尾のコロンを忘れていませんか？\n`;
