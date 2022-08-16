@@ -157,6 +157,9 @@ function formatErrorMessage(original) {
   formatted = formatted.replaceAll('ZeroDivisionError: integer division or modulo by zero', 'ゼロ除算エラー: ゼロで割ろうとしました');
   formatted = formatted.replaceAll(/TypeError: unsupported operand type\(s\) for (.*): '(.*)' and '(.*)'/g, '型エラー: 「$2」と「$3」の間で「$1」の計算はできません');
   formatted = formatted.replaceAll(/TypeError: '(.*)' not supported between instances of '(.*)' and '(.*)'/g, '型エラー: 「$2」と「$3」の間で「$1」の計算はできません');
+  formatted = formatted.replaceAll(/TypeError: can only concatenate str \(not "(.*)"\) to str/g, '型エラー: 「$1」と文字列を + で結合することはできません (文字列同士のみ結合できます)');
+  formatted = formatted.replaceAll(/TypeError: '(.*)' object cannot be interpreted as an integer/g, '型エラー: 「$1」の要素を整数値とみなすことはできません');
+  formatted = formatted.replaceAll(/TypeError: argument of type '(.*)' is not iterable/g, '型エラー: 「$1」は繰り返し不可能です (in の右辺に使うことはできません)');
 
   // 関数
   formatted = formatted.replaceAll(/TypeError: '(.*)' object is not callable/g, '型エラー: 「$1」のオブジェクトは関数ではないので ( ) を付けても呼び出せません');
@@ -165,7 +168,10 @@ function formatErrorMessage(original) {
   formatted = formatted.replaceAll(/TypeError: '(.*)' is an invalid keyword argument for (.*)/g, '型エラー: $2 に「$1」という引数はありません');
 
   // 単語
-  formatted = formatted.replaceAll('NoneType', '値ではないもの');
+  formatted = formatted.replaceAll('「int」', '「整数 (int)」');
+  formatted = formatted.replaceAll('「str」', '「文字列 (str)」');
+  formatted = formatted.replaceAll('「list」', '「リスト (list)」');
+  formatted = formatted.replaceAll('「NoneType」', '「値ではないもの (NoneType)」');
   formatted = formatted.replaceAll('builtin_function_or_method', '組み込み関数');
 
   // その他
