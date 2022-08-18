@@ -5,20 +5,30 @@ let initializaionCompleted = false;
 async function load() {
   const pyodide = await loadPyodide({
     indexURL: location.href.slice(0, location.href.length - '/worker-pyodide.js'.length) + '/pyodide',
-    stdin: stdin_callback,
-    stdout: stdout_callback,
-    stderr: stdout_callback,
   });
 
   await pyodide.loadPackage('numpy');
   await pyodide.loadPackage('micropip');
 
   pyodide.runPython(`
-import sys, traceback
+import js, sys, traceback
+from pyodide.console import PyodideConsole
+
+
 def reformat_exception():
-    return ''.join(
+    return "".join(
         traceback.format_exception(sys.last_type, sys.last_value, sys.last_traceback)
     )
+
+
+async def exec_code():
+    pyconsole = PyodideConsole(
+        filename="<console>", globals={"__code_to_run": __code_to_run}
+    )
+    pyconsole.stdin_callback = js.stdin_callback
+    pyconsole.stdout_callback = js.stdout_callback
+    pyconsole.stderr_callback = js.stdout_callback
+    await pyconsole.push("exec(__code_to_run, {})")
 `);
 
   self.postMessage({
@@ -39,20 +49,11 @@ function stdin_callback() {
 
 function stdout_callback(message) {
   if (!initializaionCompleted) return;
-  if (message == '<eof>') return;
 
-  if (message.length > 5 && message.slice(message.length - 5) == '<eof>') {
-    self.postMessage({
-      kind: 'stdout',
-      content: message.slice(0, message.length - 5),
-    });
-  }
-  else {
-    self.postMessage({
-      kind: 'stdout',
-      content: message + '\n',
-    });
-  }
+  self.postMessage({
+    kind: 'stdout',
+    content: message,
+  });
 }
 
 function python_error(message) {
@@ -74,9 +75,7 @@ async function run(source, input) {
   const pyodide = await pyodideReadyPromise;
   try {
     pyodide.globals.set('__code_to_run', source);
-    await pyodide.runPython(`exec(__code_to_run, {})`);
-    await pyodide.runPython(`print('<eof>')`);
-    await pyodide.runPython(`print('<eof>', file=sys.stderr)`);
+    await pyodide.runPython(`exec_code()`);
   } catch (e) {
     if (e instanceof pyodide.PythonError) {
       const reformat_exception = pyodide.globals.get('reformat_exception');
