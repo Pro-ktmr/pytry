@@ -123,6 +123,7 @@ function formatErrorMessage(original) {
   formatted = formatted.replaceAll(/(.*)File "Main.py", line (\d*)(.*)/g, '$1プログラムの $2 行目');
 
   // インデント
+  formatted = formatted.replaceAll(/IndentationError: expected an indented block after '(.*)' statement on line (.*)/g, 'インデントエラー: $2 行目の $1 文の後にインデントされた部分が必要です');
   formatted = formatted.replaceAll('IndentationError: expected an indented block', 'インデントエラー: インデントを忘れています');
   formatted = formatted.replaceAll('IndentationError: unexpected indent', 'インデントエラー: インデントがおかしな位置にあります');
   formatted = formatted.replaceAll('IndentationError: unindent does not match any outer indentation level', 'インデントエラー: インデントが揃っていません');
@@ -136,16 +137,23 @@ function formatErrorMessage(original) {
 
   // 存在しない
   formatted = formatted.replaceAll(/NameError: name '(.*)' is not defined/g, '名前エラー: 「$1」が見つかりません (小文字と大文字は区別します)');
+  formatted = formatted.replaceAll(/TypeError: '(.*)' object is not subscriptable/g, '型エラー: 「$1」のオブジェクトに添え字は使えません');
   formatted = formatted.replaceAll('IndexError: string index out of range', '添え字エラー: 文字列の長さ以上の添え字の文字にアクセスしようとしました');
   formatted = formatted.replaceAll('IndexError: list index out of range', '添え字エラー: リストのサイズ以上の添え字の要素にアクセスしようとしました');
+  formatted = formatted.replaceAll('IndexError: list assignment index out of range', '添え字エラー: リストのサイズ以上の添え字の要素に代入しようとしました');
+  formatted = formatted.replaceAll(/ValueError: list.remove(x): x not in list/g, '値エラー: remove で消そうとしている要素が存在していません');
   formatted = formatted.replaceAll(/KeyError: '(.*)'/g, 'キーエラー: キー「$1」は存在しません');
   formatted = formatted.replaceAll(/AttributeError: '(.*)' object has no attribute '(.*)'/g, '属性エラー: 「$1」のオブジェクトに「$2」という属性は存在しません');
 
   // 文法
   formatted = formatted.replaceAll("SyntaxError: invalid syntax. Maybe you meant '==' or ':=' instead of '='?", '文法エラー: 文法が間違っています (比較のイコールは == です)');
+  formatted = formatted.replaceAll('SyntaxError: invalid syntax. Perhaps you forgot a comma?', '文法エラー: 文法が間違っています (コンマを忘れていませんか？)');
   formatted = formatted.replaceAll('SyntaxError: invalid syntax', '文法エラー: 文法が間違っています');
   formatted = formatted.replaceAll('SyntaxError: cannot assign to operator', '文法エラー: 代入のイコールの左辺に演算子は使えません');
-  formatted = formatted.replaceAll("SyntaxError: cannot assign to expression here. Maybe you meant '==' instead of '='?", '文法エラー: 代入のイコールの左辺に式は使えません (比較のイコールは == です)');
+  formatted = formatted.replaceAll("SyntaxError: cannot assign to expression here. Maybe you meant '==' instead of '='?", '文法エラー: ここでは代入のイコールの左辺に式は使えません (比較のイコールは == です)');
+  formatted = formatted.replaceAll("SyntaxError: cannot assign to function call here. Maybe you meant '==' instead of '='?", '文法エラー: ここでは代入のイコールの左辺に関数呼び出しは使えません (比較のイコールは == です)');
+  formatted = formatted.replaceAll("SyntaxError: cannot assign to subscript here. Maybe you meant '==' instead of '='?", '文法エラー: ここでは代入のイコールの左辺に添え字は使えません (比較のイコールは == です)');
+  formatted = formatted.replaceAll("SyntaxError: cannot assign to literal here. Maybe you meant '==' instead of '='?", '文法エラー: ここでは代入のイコールの左辺に値は使えません (比較のイコールは == です)');
   formatted = formatted.replaceAll(/SyntaxError: expected '(.*)'/g, '文法エラー: 「$1」が必要です');
   formatted = formatted.replaceAll('SyntaxError: EOL while scanning string literal', '文法エラー: 文字列の終わりのクオーテーションが見つかりません');
   formatted = formatted.replaceAll(/SyntaxError: invalid character '(.*)' \((.*)\)/g, '文法エラー: 「$1」という文字は使えません (誤って全角文字を使っていることがあります)');
@@ -159,7 +167,9 @@ function formatErrorMessage(original) {
   formatted = formatted.replaceAll(/TypeError: '(.*)' not supported between instances of '(.*)' and '(.*)'/g, '型エラー: 「$2」と「$3」の間で「$1」の計算はできません');
   formatted = formatted.replaceAll(/TypeError: can only concatenate str \(not "(.*)"\) to str/g, '型エラー: 「$1」と文字列を + で結合することはできません (文字列同士のみ結合できます)');
   formatted = formatted.replaceAll(/TypeError: '(.*)' object cannot be interpreted as an integer/g, '型エラー: 「$1」の要素を整数値とみなすことはできません');
+  formatted = formatted.replaceAll(/TypeError: '(.*)' object is not iterable/g, '型エラー: 「$1」は繰り返し不可能です (リストのように使うことはできません)');
   formatted = formatted.replaceAll(/TypeError: argument of type '(.*)' is not iterable/g, '型エラー: 「$1」は繰り返し不可能です (in の右辺に使うことはできません)');
+  formatted = formatted.replaceAll(/TypeError: '(.*)' object does not support item assignment/g, '型エラー: 「$1」の添え字で指定した要素に代入することはできません');
 
   // 関数
   formatted = formatted.replaceAll(/TypeError: '(.*)' object is not callable/g, '型エラー: 「$1」のオブジェクトは関数ではないので ( ) を付けても呼び出せません');
@@ -218,6 +228,9 @@ function searchWarnings() {
     }
     if (line.match(/=!/g) !== null) {
       res += `${i + 1} 行目の =! は != ではありませんか？\n`;
+    }
+    if (line.match(/=!/g) !== null) {
+      res += `${i + 1} 行目の <> は != ではありませんか？\n`;
     }
     if (line.match(/(if|while)[^=]*=[^=]/g) !== null && line.match(/>=|<=|!=|=>|=<|=!/g) == null) {
       res += `${i + 1} 行目の = は == ではありませんか？\n`;
