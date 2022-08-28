@@ -159,6 +159,7 @@ function formatErrorMessage(original) {
   formatted = formatted.replaceAll(/SyntaxError: invalid character '(.*)' \((.*)\)/g, '文法エラー: 「$1」という文字は使えません (誤って全角文字を使っていることがあります)');
   formatted = formatted.replaceAll('SyntaxError: unexpected EOF while parsing', '文法エラー: 括弧などを閉じないまま行が終わってしまいました');
   formatted = formatted.replaceAll(/SyntaxError: unmatched '(.*)'/g, '文法エラー: 「$1」の開きと閉じが対応していません');
+  formatted = formatted.replaceAll(/SyntaxError: '(.*)' was never closed/g, '文法エラー: 「$1」の閉じがありません');
 
   // 演算
   formatted = formatted.replaceAll('ZeroDivisionError: division by zero', 'ゼロ除算エラー: ゼロで割ろうとしました');
@@ -166,6 +167,8 @@ function formatErrorMessage(original) {
   formatted = formatted.replaceAll(/TypeError: unsupported operand type\(s\) for (.*): '(.*)' and '(.*)'/g, '型エラー: 「$2」と「$3」の間で「$1」の計算はできません');
   formatted = formatted.replaceAll(/TypeError: '(.*)' not supported between instances of '(.*)' and '(.*)'/g, '型エラー: 「$2」と「$3」の間で「$1」の計算はできません');
   formatted = formatted.replaceAll(/TypeError: can only concatenate str \(not "(.*)"\) to str/g, '型エラー: 「$1」と文字列を + で結合することはできません (文字列同士のみ結合できます)');
+
+  // 型
   formatted = formatted.replaceAll(/TypeError: '(.*)' object cannot be interpreted as an integer/g, '型エラー: 「$1」の要素を整数値とみなすことはできません');
   formatted = formatted.replaceAll(/TypeError: '(.*)' object is not iterable/g, '型エラー: 「$1」は繰り返し不可能です (リストのように使うことはできません)');
   formatted = formatted.replaceAll(/TypeError: argument of type '(.*)' is not iterable/g, '型エラー: 「$1」は繰り返し不可能です (in の右辺に使うことはできません)');
@@ -179,12 +182,14 @@ function formatErrorMessage(original) {
 
   // 単語
   formatted = formatted.replaceAll('「int」', '「整数 (int)」');
+  formatted = formatted.replaceAll('「float」', '「小数 (float)」');
   formatted = formatted.replaceAll('「str」', '「文字列 (str)」');
   formatted = formatted.replaceAll('「list」', '「リスト (list)」');
   formatted = formatted.replaceAll('「NoneType」', '「値ではないもの (NoneType)」');
   formatted = formatted.replaceAll('builtin_function_or_method', '組み込み関数');
 
   // その他
+  formatted = formatted.replaceAll('MemoryError', 'メモリエラー: メモリの使いすぎです (巨大なリストを作成したり無限ループが発生したりしたときに表示されることがあります)');
   formatted = formatted.replaceAll(/ModuleNotFoundError: No module named '(.*)'/g, 'モジュールエラー: 「$1」というモジュールが見つかりません (micropip でインストールできるかもしれません)');
 
   return `\n${formatted}${searchWarnings()}\n=== エラー原文 ===\n${original}==================`;
