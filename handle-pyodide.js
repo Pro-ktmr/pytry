@@ -136,7 +136,7 @@ function formatErrorMessage(original) {
   formatted = formatted.replaceAll('EOFError: EOF when reading a line', 'ファイル末尾エラー: ファイルの末尾に到達しました (入力の受け取り方や入力欄が正しくないことがあります)');
 
   // 存在しない
-  formatted = formatted.replaceAll(/NameError: name '(.*)' is not defined/g, '名前エラー: 「$1」が見つかりません (小文字と大文字は区別します)');
+  formatted = formatted.replaceAll(/NameError: name '(.*)' is not defined/g, '名前エラー: 「$1」が見つかりません (小文字と大文字は区別します，文字列はダブルクオーテーションで囲みます)');
   formatted = formatted.replaceAll(/TypeError: '(.*)' object is not subscriptable/g, '型エラー: 「$1」のオブジェクトに添え字は使えません');
   formatted = formatted.replaceAll('IndexError: string index out of range', '添え字エラー: 文字列の長さ以上の添え字の文字にアクセスしようとしました');
   formatted = formatted.replaceAll('IndexError: list index out of range', '添え字エラー: リストのサイズ以上の添え字の要素にアクセスしようとしました');
@@ -173,6 +173,8 @@ function formatErrorMessage(original) {
   formatted = formatted.replaceAll(/TypeError: '(.*)' object is not iterable/g, '型エラー: 「$1」は繰り返し不可能です (リストのように使うことはできません)');
   formatted = formatted.replaceAll(/TypeError: argument of type '(.*)' is not iterable/g, '型エラー: 「$1」は繰り返し不可能です (in の右辺に使うことはできません)');
   formatted = formatted.replaceAll(/TypeError: '(.*)' object does not support item assignment/g, '型エラー: 「$1」の添え字で指定した要素に代入することはできません');
+  formatted = formatted.replaceAll(/TypeError: list indices must be integers or slices, not (.*)/g, '型エラー: リストの添え字は「$1」ではなく整数やスライスにしてください');
+  formatted = formatted.replaceAll(/TypeError: ord() expected a character, but string of length (.*) found/g, '型エラー: ord() の括弧内は 1 文字でないといけませんが，長さ $1 の文字列が渡されました');
 
   // 関数
   formatted = formatted.replaceAll(/TypeError: '(.*)' object is not callable/g, '型エラー: 「$1」のオブジェクトは関数ではないので ( ) を付けても呼び出せません');
