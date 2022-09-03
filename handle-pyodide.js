@@ -105,7 +105,7 @@ function workerListenner(msg) {
 }
 
 function cancelRunning() {
-  outputEditor.setValue(outputEditor.getValue() + '実行から 10 秒が経過したため処理を打ち切りました\n次に実行できるようになるまで数秒かかります\n');
+  outputEditor.setValue(outputEditor.getValue() + '実行から 10 秒が経過したため処理を打ち切りました\n次に実行できるようになるまで数秒かかります\nこの表示が現れる主な原因は次の通りです：\n1. 無限ループが発生している (while 文の条件式などが間違っていないか確認しましょう)\n2. 解法の効率が悪い (時間計算量を見積もりましょう)\n');
   sendSubmission(editor.getValue(), inputEditor.getValue(), outputEditor.getValue(), '');
   worker.terminate();
   initializeWorker();
