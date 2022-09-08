@@ -236,7 +236,7 @@ function searchWarnings() {
     if (line.match(/=!/g) !== null) {
       res += `${i + 1} 行目の =! は != ではありませんか？\n`;
     }
-    if (line.match(/=!/g) !== null) {
+    if (line.match(/<>/g) !== null) {
       res += `${i + 1} 行目の <> は != ではありませんか？\n`;
     }
     if (line.match(/(if|while)[^=]*=[^=]/g) !== null && line.match(/>=|<=|!=|=>|=<|=!/g) == null) {
