@@ -128,17 +128,21 @@ function formatErrorMessage(original) {
   formatted = formatted.replaceAll('IndentationError: unexpected indent', 'インデントエラー: インデントがおかしな位置にあります');
   formatted = formatted.replaceAll('IndentationError: unindent does not match any outer indentation level', 'インデントエラー: インデントが揃っていません');
   formatted = formatted.replaceAll('SyntaxError: invalid non-printable character U+3000', '文法エラー: 全角スペースが紛れ込んでいます (半角スペース 2 個に直しましょう)');
+  formatted = formatted.replaceAll('TabError: inconsistent use of tabs and spaces in indentation', 'タブエラー: インデントでタブと半角スペースが混ざっています');
 
   // 入出力
   formatted = formatted.replaceAll(/ValueError: invalid literal for int\(\) with base 10: '(.*)'/g, '値エラー: 「$1」を整数に変換できません (入力の受け取り方や入力欄が正しくないことがあります)');
   formatted = formatted.replaceAll(/ValueError: not enough values to unpack \(expected (.*), got (.*)\)/g, '値エラー: $2 個しかないデータを $1 個に分けようとしました (入力の受け取り方や入力欄が正しくないことがあります)');
   formatted = formatted.replaceAll(/ValueError: too many values to unpack \(expected (.*)\)/g, '値エラー: $1 個より多いデータを $1 個に分けようとしました (入力の受け取り方や入力欄が正しくないことがあります)');
   formatted = formatted.replaceAll('EOFError: EOF when reading a line', 'ファイル末尾エラー: ファイルの末尾に到達しました (入力の受け取り方や入力欄が正しくないことがあります)');
+  formatted = formatted.replaceAll('TypeError: object.readline() returned non-string', '型エラー: ファイルの末尾に到達しました (入力の受け取り方や入力欄が正しくないことがあります)');
+  formatted = formatted.replaceAll("SyntaxError: Missing parentheses in call to 'print'. Did you mean print(...)?", '文法エラー: print() のように print の後に括弧が必要です');
 
   // 存在しない
   formatted = formatted.replaceAll(/NameError: name '(.*)' is not defined/g, '名前エラー: 「$1」が見つかりません (小文字と大文字は区別します，文字列はダブルクオーテーションで囲みます)');
   formatted = formatted.replaceAll(/TypeError: '(.*)' object is not subscriptable/g, '型エラー: 「$1」のオブジェクトに添え字は使えません');
   formatted = formatted.replaceAll('IndexError: string index out of range', '添え字エラー: 文字列の長さ以上の添え字の文字にアクセスしようとしました');
+  formatted = formatted.replaceAll('IndexError: tuple index out of range', '添え字エラー: タプルのサイズ以上の添え字の要素にアクセスしようとしました');
   formatted = formatted.replaceAll('IndexError: list index out of range', '添え字エラー: リストのサイズ以上の添え字の要素にアクセスしようとしました');
   formatted = formatted.replaceAll('IndexError: list assignment index out of range', '添え字エラー: リストのサイズ以上の添え字の要素に代入しようとしました');
   formatted = formatted.replaceAll(/ValueError: list.remove(x): x not in list/g, '値エラー: remove で消そうとしている要素が存在していません');
@@ -160,6 +164,7 @@ function formatErrorMessage(original) {
   formatted = formatted.replaceAll('SyntaxError: unexpected EOF while parsing', '文法エラー: 括弧などを閉じないまま行が終わってしまいました');
   formatted = formatted.replaceAll(/SyntaxError: unmatched '(.*)'/g, '文法エラー: 「$1」の開きと閉じが対応していません');
   formatted = formatted.replaceAll(/SyntaxError: '(.*)' was never closed/g, '文法エラー: 「$1」の閉じがありません');
+  formatted = formatted.replaceAll('SyntaxError: invalid decimal literal', '文法エラー: 文字や数値が混ざっています (変数名の先頭はアルファベットでなければなりません) (掛け算の記号 * は省略できません)');
 
   // 演算
   formatted = formatted.replaceAll('ZeroDivisionError: division by zero', 'ゼロ除算エラー: ゼロで割ろうとしました');
@@ -173,14 +178,19 @@ function formatErrorMessage(original) {
   formatted = formatted.replaceAll(/TypeError: '(.*)' object is not iterable/g, '型エラー: 「$1」は繰り返し不可能です (リストのように使うことはできません)');
   formatted = formatted.replaceAll(/TypeError: argument of type '(.*)' is not iterable/g, '型エラー: 「$1」は繰り返し不可能です (in の右辺に使うことはできません)');
   formatted = formatted.replaceAll(/TypeError: '(.*)' object does not support item assignment/g, '型エラー: 「$1」の添え字で指定した要素に代入することはできません');
+  formatted = formatted.replaceAll('TypeError: string indices must be integers', '型エラー: 文字列の添え字は整数にしてください');
   formatted = formatted.replaceAll(/TypeError: list indices must be integers or slices, not (.*)/g, '型エラー: リストの添え字は「$1」ではなく整数やスライスにしてください');
-  formatted = formatted.replaceAll(/TypeError: ord() expected a character, but string of length (.*) found/g, '型エラー: ord() の括弧内は 1 文字でないといけませんが，長さ $1 の文字列が渡されました');
+  formatted = formatted.replaceAll(/TypeError: object of type '(.*)' has no len\(\)/g, '型エラー: len() の括弧内は「$1」にはできません');
+  formatted = formatted.replaceAll(/TypeError: ord\(\) expected a character, but string of length (.*) found/g, '型エラー: ord() の括弧内は 1 文字でないといけませんが，長さ $1 の文字列が渡されました');
+  formatted = formatted.replaceAll(/TypeError: ord\(\) expected string of length 1, but (.*) found/g, '型エラー: ord() の括弧内は 1 文字の文字列でないといけませんが，「$1」が渡されました');
 
   // 関数
-  formatted = formatted.replaceAll(/TypeError: '(.*)' object is not callable/g, '型エラー: 「$1」のオブジェクトは関数ではないので ( ) を付けても呼び出せません');
+  formatted = formatted.replaceAll(/TypeError: '(.*)' object is not callable/g, '型エラー: 「$1」のオブジェクトは関数ではないので () を付けても呼び出せません');
   formatted = formatted.replaceAll(/TypeError: (.*) must have at least two arguments./g, '型エラー: $1 には少なくとも 2 つの引数が必要です');
+  formatted = formatted.replaceAll(/TypeError: (.*) expected at least (.*) argument, got (.*)/g, '型エラー: $1() には少なくとも $2 個の引数が必要ですが，$3 個しか渡されませんでした');
   formatted = formatted.replaceAll(/TypeError: (.*) argument must be a string, a bytes-like object or a number, not '(.*)'/g, '型エラー: $1 の引数が「$2」であってはいけません');
   formatted = formatted.replaceAll(/TypeError: '(.*)' is an invalid keyword argument for (.*)/g, '型エラー: $2 に「$1」という引数はありません');
+  formatted = formatted.replaceAll(/ValueError: (.*) arg is an empty sequence/g, '値エラー: $1 の引数が空の列になってしまいました');
 
   // 単語
   formatted = formatted.replaceAll('「int」', '「整数 (int)」');
