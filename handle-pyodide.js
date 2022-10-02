@@ -191,6 +191,7 @@ function formatErrorMessage(original) {
   formatted = formatted.replaceAll(/TypeError: (.*) argument must be a string, a bytes-like object or a number, not '(.*)'/g, '型エラー: $1 の引数が「$2」であってはいけません');
   formatted = formatted.replaceAll(/TypeError: '(.*)' is an invalid keyword argument for (.*)/g, '型エラー: $2 に「$1」という引数はありません');
   formatted = formatted.replaceAll(/ValueError: (.*) arg is an empty sequence/g, '値エラー: $1 の引数が空の列になってしまいました');
+  formatted = formatted.replaceAll(/TypeError: (.*)\(\) takes no keyword arguments/g, '型エラー: $1() の括弧内にイコールは使えません');
 
   // 単語
   formatted = formatted.replaceAll('「int」', '「整数 (int)」');
