@@ -8,6 +8,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
   <link href="./style.css" rel="stylesheet">
+  <script src="./terminaljs-2.0/terminal.js"></script>
+  <script src="./index.js"></script>
   <script src="./pyodide/pyodide.js"></script>
   <script src="./handle-pyodide.js"></script>
   <script src="./monaco-editor/min/vs/loader.js"></script>
@@ -39,9 +41,17 @@
     </span>
     <span class="config-button fold-button">⚙️
       <div class="content">
-        オートフォーマット：<div class="toggle_button">
-          <input id="toggle_auto_format" class="toggle_input" type="checkbox" checked />
-          <label for="toggle_auto_format" class="toggle_label"></label>
+        <div>
+          オートフォーマット：<div class="toggle_button">
+            <input id="toggle_auto_format" class="toggle_input" type="checkbox" checked />
+            <label for="toggle_auto_format" class="toggle_label"></label>
+          </div>
+        </div>
+        <div>
+          インタラクティブモード：<div class="toggle_button">
+            <input id="toggle_interactive" class="toggle_input" type="checkbox" />
+            <label for="toggle_interactive" class="toggle_label"></label>
+          </div>
         </div>
       </div>
     </span>
@@ -77,6 +87,9 @@
         <h3 class="unselectable">出力</h3>
         <div id="output"></div>
       </div>
+    </div>
+    <div id="right-column-interactive" style="display: none;">
+
     </div>
   </div>
 </body>

@@ -44,6 +44,11 @@ const pyodideReadyPromise = load();
 
 let stdin_lines = [];
 function stdin_callback() {
+  return outer_stdin_callback();
+  self.postMessage({
+    kind: 'stdin',
+  });
+  while (stdin_lines.length == 0) console.log(stdin_lines);
   return stdin_lines.shift();
 }
 
@@ -69,9 +74,7 @@ function python_error(message) {
   });
 }
 
-async function run(source, input) {
-  stdin_lines = input.split('\n');
-
+async function run(source) {
   const pyodide = await pyodideReadyPromise;
   try {
     pyodide.globals.set('__code_to_run', source);
@@ -97,5 +100,17 @@ async function run(source, input) {
 }
 
 self.addEventListener('message', (msg) => {
-  run(msg.data[0], msg.data[1]);
+  console.log(msg);
+
+  const kind = msg.data['kind'];
+
+  if (kind == 'run') {
+    stdin_lines = [];
+    run(msg.data['content']);
+  }
+
+  if (kind == 'stdin') {
+    outer_stdin_callback = content;
+    //Array.prototype.push.apply(stdin_lines, msg.data['content'].split('\n'));
+  }
 });

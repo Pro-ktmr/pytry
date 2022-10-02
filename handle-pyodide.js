@@ -25,9 +25,17 @@ function enableReady() {
 let timer;
 
 async function run() {
+  const is_interactive = document.getElementById('toggle_interactive').checked;
+
   if (ready) {
-    outputEditor.setValue('');
-    outputEditor.revealLine(0);
+    if (is_interactive) {
+      terminal.clear();
+    }
+    else {
+      outputEditor.setValue('');
+      outputEditor.revealLine(0);
+    }
+
     editor.markers = [];
     monaco.editor.setModelMarkers(editor.getModel(), 'message', editor.markers);
 
@@ -47,12 +55,28 @@ async function run() {
 
     disableReady();
     timer = setTimeout(cancelRunning, 10000);
-    worker.postMessage([editor.getValue(), inputEditor.getValue().replaceAll('\r', '')]);
+    worker.postMessage({
+      kind: 'stdin',
+      content: () => {
+        let tmp = '';
+        terminal.input('', (input) => { tmp = input; });
+        return tmp;
+      },
+    });
+    worker.postMessage({
+      kind: 'run',
+      content: editor.getValue(),
+    });
+    /*if (!is_interactive) worker.postMessage({
+      kind: 'stdin',
+      content: inputEditor.getValue().replaceAll('\r', ''),
+    });*/
   }
 }
 
 function workerListenner(msg) {
   const kind = msg.data['kind'];
+  const is_interactive = document.getElementById('toggle_interactive').checked;
 
   if (kind == 'ready') {
     if (timer) clearTimeout(timer);
@@ -74,9 +98,19 @@ function workerListenner(msg) {
     return;
   }
 
+  if (kind == 'stdin') {
+    if (is_interactive) terminal.input('', (input) => {
+      worker.postMessage({
+        kind: 'stdin',
+        content: input.replaceAll('\r', ''),
+      });
+    });
+  }
+
   if (kind == 'stdout') {
     const output = msg.data['content'];
-    outputEditor.setValue(outputEditor.getValue() + output);
+    if (is_interactive) terminal.print(output);
+    else outputEditor.setValue(outputEditor.getValue() + output);
   }
 
   if (kind == 'error') {
