@@ -139,7 +139,7 @@ function formatErrorMessage(original) {
   formatted = formatted.replaceAll("SyntaxError: Missing parentheses in call to 'print'. Did you mean print(...)?", '文法エラー: print() のように print の後に括弧が必要です');
 
   // 存在しない
-  formatted = formatted.replaceAll(/NameError: name '(.*)' is not defined/g, '名前エラー: 「$1」が見つかりません (小文字と大文字は区別します，文字列はダブルクオーテーションで囲みます)');
+  formatted = formatted.replaceAll(/NameError: name '(.*)' is not defined/g, '名前エラー: 「$1」が見つかりません (小文字と大文字は区別します) (文字列はダブルクオーテーションで囲みます)');
   formatted = formatted.replaceAll(/TypeError: '(.*)' object is not subscriptable/g, '型エラー: 「$1」のオブジェクトに添え字は使えません');
   formatted = formatted.replaceAll('IndexError: string index out of range', '添え字エラー: 文字列の長さ以上の添え字の文字にアクセスしようとしました');
   formatted = formatted.replaceAll('IndexError: tuple index out of range', '添え字エラー: タプルのサイズ以上の添え字の要素にアクセスしようとしました');
@@ -147,7 +147,7 @@ function formatErrorMessage(original) {
   formatted = formatted.replaceAll('IndexError: list assignment index out of range', '添え字エラー: リストのサイズ以上の添え字の要素に代入しようとしました');
   formatted = formatted.replaceAll(/ValueError: list.remove(x): x not in list/g, '値エラー: remove で消そうとしている要素が存在していません');
   formatted = formatted.replaceAll(/KeyError: '(.*)'/g, 'キーエラー: キー「$1」は存在しません');
-  formatted = formatted.replaceAll(/AttributeError: '(.*)' object has no attribute '(.*)'/g, '属性エラー: 「$1」のオブジェクトに「$2」という属性は存在しません');
+  formatted = formatted.replaceAll(/AttributeError: '(.*)' object has no attribute '(.*)'/g, '属性エラー: 「$1」のオブジェクトに「.$2」は存在しません');
 
   // 文法
   formatted = formatted.replaceAll("SyntaxError: invalid syntax. Maybe you meant '==' or ':=' instead of '='?", '文法エラー: 文法が間違っています (比較のイコールは == です)');
@@ -165,6 +165,7 @@ function formatErrorMessage(original) {
   formatted = formatted.replaceAll(/SyntaxError: unmatched '(.*)'/g, '文法エラー: 「$1」の開きと閉じが対応していません');
   formatted = formatted.replaceAll(/SyntaxError: '(.*)' was never closed/g, '文法エラー: 「$1」の閉じがありません');
   formatted = formatted.replaceAll('SyntaxError: invalid decimal literal', '文法エラー: 文字や数値が混ざっています (変数名の先頭はアルファベットでなければなりません) (掛け算の記号 * は省略できません)');
+  formatted = formatted.replaceAll("SyntaxError: 'return' outside function", '文法エラー: 関数の中身以外で return を使うことはできません');
 
   // 演算
   formatted = formatted.replaceAll('ZeroDivisionError: division by zero', 'ゼロ除算エラー: ゼロで割ろうとしました');
@@ -181,7 +182,8 @@ function formatErrorMessage(original) {
   formatted = formatted.replaceAll('TypeError: string indices must be integers', '型エラー: 文字列の添え字は整数にしてください');
   formatted = formatted.replaceAll(/TypeError: list indices must be integers or slices, not (.*)/g, '型エラー: リストの添え字は「$1」ではなく整数やスライスにしてください');
   formatted = formatted.replaceAll(/TypeError: object of type '(.*)' has no len\(\)/g, '型エラー: len() の括弧内は「$1」にはできません');
-  formatted = formatted.replaceAll(/TypeError: ord\(\) expected a character, but string of length (.*) found/g, '型エラー: ord() の括弧内は 1 文字でないといけませんが，長さ $1 の文字列が渡されました');
+  formatted = formatted.replaceAll(/TypeError: ord\(\) expected a character, but string of length (.*) found/g, '型エラー: ord() の括弧内の文字列は長さ 1 でないといけませんが，長さ $1 の文字列が渡されました');
+  formatted = formatted.replaceAll(/TypeError: ord\(\) expected string of length 1, but (.*) found/g, '型エラー: ord() の括弧内は 1 文字の文字列でないといけませんが，「$1」が渡されました');
   formatted = formatted.replaceAll(/TypeError: ord\(\) expected string of length 1, but (.*) found/g, '型エラー: ord() の括弧内は 1 文字の文字列でないといけませんが，「$1」が渡されました');
 
   // 関数
@@ -246,6 +248,15 @@ function searchWarnings() {
     }
     if (line.match(/=!/g) !== null) {
       res += `${i + 1} 行目の =! は != ではありませんか？\n`;
+    }
+    if (line.match(/!==/g) !== null) {
+      res += `${i + 1} 行目の !== は != ではありませんか？\n`;
+    }
+    if (line.match(/>==/g) !== null) {
+      res += `${i + 1} 行目の >== は >= ではありませんか？\n`;
+    }
+    if (line.match(/<==/g) !== null) {
+      res += `${i + 1} 行目の <== は <= ではありませんか？\n`;
     }
     if (line.match(/<>/g) !== null) {
       res += `${i + 1} 行目の <> は != ではありませんか？\n`;
