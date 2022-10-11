@@ -8,7 +8,7 @@ body {
   height: 100%;
   margin: 0;
   padding: 0;
-  font-family: 'Noto Sans JP', sans-serif;
+  font-family: "Noto Sans JP", sans-serif;
 }
 
 .unselectable {
@@ -118,7 +118,7 @@ h3 {
 }
 
 .copy-paste-button:hover {
-  background: #eee;
+  background: #ddd;
 }
 
 .insert-buttons {
@@ -136,6 +136,7 @@ h3 {
 }
 
 .insert-button {
+  position: relative;
   border-radius: 4px;
   background: #eee;
   font-size: 12px;
@@ -144,16 +145,31 @@ h3 {
   margin: 1px 2px;
   vertical-align: middle;
   cursor: pointer;
+  animation-delay: 5s;
+  animation-direction: alternate;
+  animation-duration: 0.8s;
+  animation-iteration-count: 6;
+  animation-name: appealAnim;
+  animation-timing-function: steps(2, start);
+}
+
+@keyframes appealAnim {
+  0% {
+    background: #bbb;
+  }
+  100% {
+    background: #eee;
+  }
 }
 
 .insert-button:hover {
-  background: #ddd;
+  background: #ccc;
 }
 
 .insert-button pre {
   display: inline;
-  font-family: 'Consolas', monospace;
-  background: #FFF67F;
+  font-family: "Consolas", monospace;
+  background: #fff67f;
   border: 1px solid #888;
 }
 
@@ -240,22 +256,22 @@ h3 {
   }
 }
 
-.ball-pulse>div:nth-child(1) {
+.ball-pulse > div:nth-child(1) {
   -webkit-animation: scale 0.75s -0.24s infinite cubic-bezier(0.2, 0.68, 0.18, 1.08);
   animation: scale 0.75s -0.24s infinite cubic-bezier(0.2, 0.68, 0.18, 1.08);
 }
 
-.ball-pulse>div:nth-child(2) {
+.ball-pulse > div:nth-child(2) {
   -webkit-animation: scale 0.75s -0.12s infinite cubic-bezier(0.2, 0.68, 0.18, 1.08);
   animation: scale 0.75s -0.12s infinite cubic-bezier(0.2, 0.68, 0.18, 1.08);
 }
 
-.ball-pulse>div:nth-child(3) {
+.ball-pulse > div:nth-child(3) {
   -webkit-animation: scale 0.75s 0s infinite cubic-bezier(0.2, 0.68, 0.18, 1.08);
   animation: scale 0.75s 0s infinite cubic-bezier(0.2, 0.68, 0.18, 1.08);
 }
 
-.ball-pulse>div {
+.ball-pulse > div {
   background-color: #fff;
   width: 10px;
   height: 10px;
@@ -304,13 +320,13 @@ h3 {
   transition: 0.4s;
 }
 
-.toggle_input:checked+.toggle_label {
-  border: 2px solid #4BD865;
+.toggle_input:checked + .toggle_label {
+  border: 2px solid #4bd865;
 }
 
-.toggle_input:checked+.toggle_label:after {
+.toggle_input:checked + .toggle_label:after {
   left: 24px;
-  background: #4BD865;
+  background: #4bd865;
 }
 
 .toggle_button {
@@ -335,12 +351,12 @@ h3 {
 
 .stdin-highlight {
   position: absolute;
-  background: #FFF67F;
+  background: #fff67f;
   z-index: -2;
 }
 
 .stdin-highlight::after {
-  content: '';
+  content: "";
   position: absolute;
   left: 0;
   top: 0;
