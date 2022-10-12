@@ -76,6 +76,10 @@ window.addEventListener('load', (event) => {
       scrollBeyondLastLine: false,
       folding: false,
       lineDecorationsWidth: 30,
+      unicodeHighlight: {
+        nonBasicASCII: false,
+        ambiguousCharacters: false,
+      },
       renderIndentGuides: false,
       readOnly: true,
     });

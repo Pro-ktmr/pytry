@@ -186,14 +186,14 @@ h3 {
 
 #left-column {
   float: left;
-  width: calc(70% - 1px);
+  width: calc(60% - 1px);
   height: 100%;
   border-right: 1px solid #ddd;
 }
 
 #right-column {
   float: right;
-  width: 30%;
+  width: 40%;
   height: 100%;
 }
 

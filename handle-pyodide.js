@@ -163,7 +163,7 @@ function formatErrorMessage(original) {
   formatted = formatted.replaceAll(/SyntaxError: invalid character '(.*)' \((.*)\)/g, '文法エラー: 「$1」という文字は使えません (誤って全角文字を使っていることがあります)');
   formatted = formatted.replaceAll('SyntaxError: unexpected EOF while parsing', '文法エラー: 括弧などを閉じないまま行が終わってしまいました');
   formatted = formatted.replaceAll(/SyntaxError: unmatched '(.*)'/g, '文法エラー: 「$1」の開きと閉じが対応していません');
-  formatted = formatted.replaceAll(/SyntaxError: '(.*)' was never closed/g, '文法エラー: 「$1」の閉じがありません');
+  formatted = formatted.replaceAll(/SyntaxError: '(.*)' was never closed/g, '文法エラー: 「$1」に対応した閉じがありません');
   formatted = formatted.replaceAll('SyntaxError: invalid decimal literal', '文法エラー: 文字や数値が混ざっています (変数名の先頭はアルファベットでなければなりません) (掛け算の記号 * は省略できません)');
   formatted = formatted.replaceAll("SyntaxError: 'return' outside function", '文法エラー: 関数の中身以外で return を使うことはできません');
 
@@ -175,7 +175,7 @@ function formatErrorMessage(original) {
   formatted = formatted.replaceAll(/TypeError: can only concatenate str \(not "(.*)"\) to str/g, '型エラー: 「$1」と文字列を + で結合することはできません (文字列同士のみ結合できます)');
 
   // 型
-  formatted = formatted.replaceAll(/TypeError: '(.*)' object cannot be interpreted as an integer/g, '型エラー: 「$1」の要素を整数値とみなすことはできません');
+  formatted = formatted.replaceAll(/TypeError: '(.*)' object cannot be interpreted as an integer/g, '型エラー: 「$1」を整数値とみなすことはできません');
   formatted = formatted.replaceAll(/TypeError: '(.*)' object is not iterable/g, '型エラー: 「$1」は繰り返し不可能です (リストのように使うことはできません)');
   formatted = formatted.replaceAll(/TypeError: argument of type '(.*)' is not iterable/g, '型エラー: 「$1」は繰り返し不可能です (in の右辺に使うことはできません)');
   formatted = formatted.replaceAll(/TypeError: '(.*)' object does not support item assignment/g, '型エラー: 「$1」の添え字で指定した要素に代入することはできません');
@@ -216,7 +216,7 @@ function searchWarnings() {
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
 
-    // コロン忘れ
+    // コロン関連
     if (line.match(/^\s*if\s[^:]*$/g) !== null) {
       res += `${i + 1} 行目の「if 条件式:」の末尾のコロンを忘れていませんか？\n`;
     }
@@ -237,6 +237,15 @@ function searchWarnings() {
     }
     if (line.match(/^\s*while\s[^:]*$/g) !== null) {
       res += `${i + 1} 行目の「while 条件式:」の末尾のコロンを忘れていませんか？\n`;
+    }
+    if (line.match(/^\s*if\s.*?:.+/g) !== null) {
+      res += `${i + 1} 行目の「if 条件式:」の末尾のコロンの後に何か書かれています．条件式をすべて書いた後にコロンを書くと直りませんか？\n`;
+    }
+    if (line.match(/^\s*elif\s.*?:.+/g) !== null) {
+      res += `${i + 1} 行目の「elif 条件式:」の末尾のコロンの後に何か書かれています．条件式をすべて書いた後にコロンを書くと直りませんか？\n`;
+    }
+    if (line.match(/^\s*while\s.*?:.+/g) !== null) {
+      res += `${i + 1} 行目の「while 条件式:」の末尾のコロンの後に何か書かれています．条件式をすべて書いた後にコロンを書くと直りませんか？\n`;
     }
 
     // 比較演算子
