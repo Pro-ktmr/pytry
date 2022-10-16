@@ -81,7 +81,7 @@ window.addEventListener('load', (event) => {
         ambiguousCharacters: false,
       },
       renderIndentGuides: false,
-      readOnly: true,
+      //readOnly: true,
     });
     outputEditor.setModel(outputSession);
     outputSession.onDidChangeContent((event) => {
@@ -115,9 +115,11 @@ function updateStdinHighlighter() {
   highlighter.style.width = (editor_right - editor_left) + 'px';
   highlighter.style.height = (editor_bottom - editor_top) + 'px';
 
-  const tags = document.getElementsByTagName('span');
+  const tags = Array.from(document.getElementsByTagName('span')).filter(tag => tag.childNodes.length == 1 && tag.childNodes[0].nodeType == 3);
   const patterns = [
+    ['list', '(', 'map', '(', 'int', ',', '·', 'input', '(', ')', '.', 'split', '(', ')', ')', ')'],
     ['list', '(', 'map', '(', 'int', ',', '·', 'input', '(', ')', '.split', '(', ')', ')', ')'],
+    ['map', '(', 'int', ',', '·', 'input', '(', ')', '.', 'split', '(', ')', ')'],
     ['map', '(', 'int', ',', '·', 'input', '(', ')', '.split', '(', ')', ')'],
     ['int', '(', 'input', '(', ')', ')'],
     ['input', '(', ')'],
@@ -130,11 +132,21 @@ function updateStdinHighlighter() {
         ok &= i + j < tags.length && pattern[j] == tags[i + j].innerHTML;
       }
       if (ok) {
-        const left = window.pageXOffset + tags[i].getBoundingClientRect().left - editor_left;
-        const top = window.pageYOffset + tags[i].getBoundingClientRect().top - editor_top + 1;
-        const right = window.pageXOffset + tags[i + pattern.length - 1].getBoundingClientRect().right - editor_left;
-        const bottom = window.pageYOffset + tags[i + pattern.length - 1].getBoundingClientRect().bottom - editor_top;
-        highlighter.innerHTML += `<span class="stdin-highlight" style="left: ${left}px; top: ${top}px; width: ${right - left}px; height: ${bottom - top}px;"></span>`;
+        for (let j = 0; j < pattern.length; j++) {
+          const left = window.pageXOffset + tags[i + j].getBoundingClientRect().left - editor_left;
+          const top = window.pageYOffset + tags[i + j].getBoundingClientRect().top - editor_top + 1;
+          const right = window.pageXOffset + tags[i + j].getBoundingClientRect().right - editor_left;
+          const bottom = window.pageYOffset + tags[i + j].getBoundingClientRect().bottom - editor_top;
+          if (j == 0) {
+            highlighter.innerHTML += `<span class="stdin-highlight stdin-highlight-left" style="left: ${left}px; top: ${top}px; width: ${right - left}px; height: ${bottom - top}px;"></span>`;
+          }
+          else if (j == pattern.length - 1) {
+            highlighter.innerHTML += `<span class="stdin-highlight stdin-highlight-right" style="left: ${left}px; top: ${top}px; width: ${right - left}px; height: ${bottom - top}px;"></span>`;
+          }
+          else {
+            highlighter.innerHTML += `<span class="stdin-highlight" style="left: ${left}px; top: ${top}px; width: ${right - left}px; height: ${bottom - top}px;"></span>`;
+          }
+        }
         i += pattern.length - 1;
         break;
       }
