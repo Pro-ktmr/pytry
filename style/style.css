@@ -1,14 +1,21 @@
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@100;300;400;500;700;900&display=swap");
+
 html,
 body {
   margin: 0;
   padding: 0;
+  font-family: "Noto Sans JP", sans-serif;
 }
 
 .title {
-  background-color: #0984e3;
+  position: relative;
   color: white;
-  padding: 6rem 0;
+  padding: 6rem 2rem;
   text-align: center;
+  background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
+    url("../img/background.jpg");
+  background-size: cover;
+  background-position: bottom;
 }
 
 .title h1 {
@@ -19,31 +26,64 @@ body {
   line-height: 4rem;
 }
 
+.title h1 img {
+  max-width: 100%;
+  width: 12rem;
+}
+
 .title .copy {
   text-align: center;
   font-size: 1.2rem;
 }
 
 .title a.start-button {
+  position: relative;
   display: inline-block;
-  border: yellow 0.2rem solid;
-  border-radius: 0.2rem;
-  padding: 1.2rem 3.4rem;
+  padding: 1.2rem 1rem;
+  width: 12rem;
+  max-width: 100%;
   margin-top: 3rem;
-  color: yellow;
+  color: black;
   text-decoration: none;
   font-size: 1.2rem;
   font-weight: bold;
+  background-color: #cccccc;
+  transition: 0.2s;
+  -webkit-transition: 0.2s;
+  -moz-transition: 0.2s;
+  -o-transition: 0.2s;
+}
+
+.title a.start-button::after {
+  position: absolute;
+  content: "";
+  width: 0.4rem;
+  height: 0.4rem;
+  right: 1.6rem;
+  top: 1.8rem;
+  border-top: 0.2rem solid #333333;
+  border-right: 0.2rem solid #333333;
+  transform: rotate(45deg);
+  transition: 0.2s;
+  -webkit-transition: 0.2s;
+  -moz-transition: 0.2s;
+  -o-transition: 0.2s;
 }
 
 .title a.start-button:hover {
-  background-color: yellow;
-  color: black;
+  background-color: #73d93b;
+  color: white;
+}
+
+.title a.start-button:hover::after {
+  border-top: 0.2rem solid white;
+  border-right: 0.2rem solid white;
 }
 
 .container {
   max-width: 700px;
   margin: 0 auto;
+  padding: 0 1rem;
   padding-top: 3rem;
   padding-bottom: 4rem;
 }
