@@ -1,0 +1,61 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+.title {
+  background-color: #0984e3;
+  color: white;
+  padding: 6rem 0;
+  text-align: center;
+}
+
+.title h1 {
+  text-align: center;
+  margin-top: 0;
+  margin-bottom: 0.6rem;
+  font-size: 4rem;
+  line-height: 4rem;
+}
+
+.title .copy {
+  text-align: center;
+  font-size: 1.2rem;
+}
+
+.title a.start-button {
+  display: inline-block;
+  border: yellow 0.2rem solid;
+  border-radius: 0.2rem;
+  padding: 1.2rem 3.4rem;
+  margin-top: 3rem;
+  color: yellow;
+  text-decoration: none;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.title a.start-button:hover {
+  background-color: yellow;
+  color: black;
+}
+
+.container {
+  max-width: 700px;
+  margin: 0 auto;
+  padding-top: 3rem;
+  padding-bottom: 4rem;
+}
+
+.notice {
+  border: 0.1rem black solid;
+  border-radius: 0.2rem;
+  padding: 2rem;
+  margin-bottom: 1rem;
+}
+
+.notice-title {
+  font-weight: bold;
+  margin-bottom: 0.4rem;
+}

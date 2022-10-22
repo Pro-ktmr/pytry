@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+  <link href="./style.css" rel="stylesheet">
+  <script src="./pyodide/pyodide.js"></script>
+  <script src="./handle-pyodide.js"></script>
+  <script src="./monaco-editor/min/vs/loader.js"></script>
+  <script src="./handle-monaco.js"></script>
+  <title>PyTry</title>
+</head>
+
+<body>
+  <div id="highlighter"></div>
+  <h1>PyTry | 初心者のための Python 開発環境
+    <span class="help-button fold-button">？
+      <div class="content">
+        PyTry は競技プログラミング初心者のための Python
+        開発環境です．日本語エラーメッセージ，標準入力を読み込むコードのワンクリック入力，ソースコード自動保存，オートフォーマットなどの便利機能を搭載しています！
+      </div>
+    </span>
+    <span class="config-button fold-button">⚙️
+      <div class="content">
+        オートフォーマット：<div class="toggle_button">
+          <input id="toggle_auto_format" class="toggle_input" type="checkbox" checked />
+          <label for="toggle_auto_format" class="toggle_label"></label>
+        </div>
+      </div>
+    </span>
+  </h1>
+  <span id="run-button" class="h1-button unselectable" onclick="run()"></span>
+  <div id="container">
+    <div id="left-column">
+      <h3 class="unselectable">ソースコード</h3>
+      <span class="copy-paste-button unselectable" onclick="copyFromSource()">コピー</span>
+      <div class="insert-buttons unselectable">
+        <span class="insert-button" onclick="insert_int_input()">整数1個：
+          <pre>int(input())</pre>
+        </span>
+        <span class="insert-button" onclick="insert_map_int_input_split()">整数複数個：
+          <pre>map(int, input().split())</pre>
+        </span>
+        <span class="insert-button" onclick="insert_input()">文字列：
+          <pre>input()</pre>
+        </span>
+        <span class="insert-button" onclick="insert_list_map_int_input_split()">整数リスト：
+          <pre>list(map(int, input().split()))</pre>
+        </span>
+      </div>
+      <div id="editor"></div>
+    </div>
+    <div id="right-column">
+      <div class="box">
+        <h3 class="unselectable">入力</h3>
+        <span class="copy-paste-button unselectable" onclick="pasteToInput()">ペースト</span>
+        <div id="input"></div>
+      </div>
+      <div class="box">
+        <h3 class="unselectable">出力</h3>
+        <div id="output"></div>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>

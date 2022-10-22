@@ -1,17 +1,28 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ja">
 
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
-  <link href="./style.css" rel="stylesheet">
-  <script src="./pyodide/pyodide.js"></script>
-  <script src="./handle-pyodide.js"></script>
-  <script src="./monaco-editor/min/vs/loader.js"></script>
-  <script src="./handle-monaco.js"></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>PyTry | 初心者のための Python 開発環境</title>
+
+  <link href="./style/style.css" rel="stylesheet">
+
+  <meta name="description"
+    content="PyTry (パイトライ) は競技プログラミング初心者のための Python 開発環境です．日本語エラーメッセージ，標準入力を読み込むコードのワンクリック入力，ソースコード自動保存，オートフォーマットなどの便利機能を搭載しています！">
+
+  <meta property="og:url" content="https://pro-ktmr.github.io/pytry/" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="PyTry | 初心者のための Python 開発環境" />
+  <meta property="og:description"
+    content="PyTry (パイトライ) は競技プログラミング初心者のための Python 開発環境です．日本語エラーメッセージ，標準入力を読み込むコードのワンクリック入力，ソースコード自動保存，オートフォーマットなどの便利機能を搭載しています！" />
+  <meta property="og:image" content="https://pro-ktmr.github.io/pytry/img/ogp.jpg" />
+  <meta property="og:site_name" content="PyTry | 初心者のための Python 開発環境" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="PyTry | 初心者のための Python 開発環境" />
+  <meta name="twitter:site" content="@Pro_ktmr" />
+  <meta name="twitter:creator" content="@Pro_ktmr" />
+
   <!-- Global site tag (gtag.js) - Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-0YCEGH6ERT"></script>
   <script>
@@ -20,72 +31,43 @@
     gtag('js', new Date());
     gtag('config', 'G-0YCEGH6ERT');
   </script>
-  <title>PyTry | 初心者のための Python 開発環境</title>
-  <meta name="description"
-    content="PyTry は競技プログラミング初心者のための Python 開発環境です．日本語エラーメッセージ，標準入力を読み込むコードのワンクリック入力，ソースコード自動保存，オートフォーマットなどの便利機能を搭載しています！">
-  <meta property="og:url" content="https://pro-ktmr.github.io/pytry/" />
-  <meta property="og:type" content="article" />
-  <meta property="og:title" content="PyTry | 初心者のための Python 開発環境" />
-  <meta property="og:description"
-    content="PyTry は競技プログラミング初心者のための Python 開発環境です．日本語エラーメッセージ，標準入力を読み込むコードのワンクリック入力，ソースコード自動保存，オートフォーマットなどの便利機能を搭載しています！" />
-  <meta property="og:image" content="https://pro-ktmr.github.io/pytry/ogp.png" />
-  <meta property="og:site_name" content="PyTry | 初心者のための Python 開発環境" />
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="PyTry | 初心者のための Python 開発環境" />
-  <meta name="twitter:site" content="@Pro_ktmr" />
-  <meta name="twitter:creator" content="@Pro_ktmr" />
 </head>
 
 <body>
-  <div id="highlighter"></div>
-  <h1>PyTry | 初心者のための Python 開発環境
-    <span class="help-button fold-button">？
-      <div class="content">
-        PyTry は競技プログラミング初心者のための Python
-        開発環境です．日本語エラーメッセージ，標準入力を読み込むコードのワンクリック入力，ソースコード自動保存，オートフォーマットなどの便利機能を搭載しています！
-      </div>
-    </span>
-    <span class="config-button fold-button">⚙️
-      <div class="content">
-        オートフォーマット：<div class="toggle_button">
-          <input id="toggle_auto_format" class="toggle_input" type="checkbox" checked />
-          <label for="toggle_auto_format" class="toggle_label"></label>
-        </div>
-      </div>
-    </span>
-  </h1>
-  <span id="run-button" class="h1-button unselectable" onclick="run()"></span>
-  <div id="container">
-    <div id="left-column">
-      <h3 class="unselectable">ソースコード</h3>
-      <span class="copy-paste-button unselectable" onclick="copyFromSource()">コピー</span>
-      <div class="insert-buttons unselectable">
-        <span class="insert-button" onclick="insert_int_input()">整数1個：
-          <pre>int(input())</pre>
-        </span>
-        <span class="insert-button" onclick="insert_map_int_input_split()">整数複数個：
-          <pre>map(int, input().split())</pre>
-        </span>
-        <span class="insert-button" onclick="insert_input()">文字列：
-          <pre>input()</pre>
-        </span>
-        <span class="insert-button" onclick="insert_list_map_int_input_split()">整数リスト：
-          <pre>list(map(int, input().split()))</pre>
-        </span>
-      </div>
-      <div id="editor"></div>
+  <div class="title">
+    <h1>
+      PyTry
+    </h1>
+    <div class="copy">
+      PyTry (パイトライ) は初心者のための Python 開発環境です
     </div>
-    <div id="right-column">
-      <div class="box">
-        <h3 class="unselectable">入力</h3>
-        <span class="copy-paste-button unselectable" onclick="pasteToInput()">ペースト</span>
-        <div id="input"></div>
+    <a class="start-button" href="./pytry/">
+      今すぐ使う
+    </a>
+  </div>
+  <div class="container">
+    <div class="notice">
+      <div class="notice-title">
+        おしらせ
       </div>
-      <div class="box">
-        <h3 class="unselectable">出力</h3>
-        <div id="output"></div>
+      <div class="notice-body">
+        <p>
+          いつも PyTry をご利用いただきありがとうございます．近頃 PyTry
+          を想定以上にご利用いただき，学校の授業でご採用いただくケースも発生してまいりました．そこで，より便利にご利用いただく方法などをご案内するため，サイトにトップページを設けることにしました．サイトの構成変更に伴いご迷惑をおかけすることもあるかと存じますが，ご理解いただきますようよろしくお願い申し上げます．
+        </p>
+        <p>
+          また，ツール本体についても機能の追加や改善を予定しております．上記「今すぐ使う」ボタンからご利用可能な最新版に万一不具合が発生していましたら，<a
+            href="./stable/">安定版</a>を代わりにご利用いただけますと幸いです．
+        </p>
       </div>
     </div>
+    <p>
+      PyTry (パイトライ) は競技プログラミング初心者のための Python
+      開発環境です．日本語エラーメッセージ，標準入力を読み込むコードのワンクリック入力，ソースコード自動保存，オートフォーマットなどの便利機能を搭載しています！
+    </p>
+    <p>
+      under construction...
+    </p>
   </div>
 </body>
 
