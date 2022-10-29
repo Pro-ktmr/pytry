@@ -115,7 +115,12 @@ function updateStdinHighlighter() {
   highlighter.style.width = (editor_right - editor_left) + 'px';
   highlighter.style.height = (editor_bottom - editor_top) + 'px';
 
-  const tags = Array.from(document.getElementsByTagName('span')).filter(tag => tag.childNodes.length == 1 && tag.childNodes[0].nodeType == 3);
+  const parent = document.querySelector("#editor > div > div.overflow-guard > div.monaco-scrollable-element.editor-scrollable.vs > div.lines-content.monaco-editor-background > div.view-lines.monaco-mouse-cursor-text");
+  if (parent === null) return;
+  let lines = Array.from(parent.childNodes);
+  lines.sort((a, b) => (parseInt(a.style.top) - parseInt(b.style.top)));
+  const tags = [].concat(...lines.map(line => Array.from(line.childNodes[0].childNodes)));
+
   const patterns = [
     ['list', '(', 'map', '(', 'int', ',', '·', 'input', '(', ')', '.', 'split', '(', ')', ')', ')'],
     ['list', '(', 'map', '(', 'int', ',', '·', 'input', '(', ')', '.split', '(', ')', ')', ')'],
