@@ -1,0 +1,3 @@
+[submodule "pytry/modules"]
+	path = pytry/modules
+	url = https://github.com/Pro-ktmr/pytry-modules.git
