@@ -92,9 +92,10 @@ h1 {
 
 .left-column {
   float: left;
-  width: calc(60% - 1px);
+  width: 60%;
   height: 100%;
   border-right: 1px solid #ddd;
+  box-sizing: border-box;
 }
 
 .right-column {
