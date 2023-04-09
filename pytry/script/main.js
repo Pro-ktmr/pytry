@@ -16,6 +16,15 @@ window.addEventListener('load', (event) => {
 
   document.getElementById('copy_from_source').addEventListener('click', editor.copy_from_source);
   document.getElementById('paste_to_input').addEventListener('click', editor.paste_to_input);
+  document.getElementById('insert-buttons').addEventListener('wheel', (e) => {
+    if (e.deltaX == 0 && e.deltaY != 0) {
+      document.getElementById('insert-buttons').scrollBy({
+        top: 0,
+        left: 40 * e.deltaY / Math.abs(e.deltaY),
+        behavior: 'auto'
+      });
+    }
+  });
   document.getElementById('insert_map_int_input_split').addEventListener('click', editor.insert_map_int_input_split);
   document.getElementById('insert_int_input').addEventListener('click', editor.insert_int_input);
   document.getElementById('insert_map_int_input_split').addEventListener('click', editor.insert_map_int_input_split);

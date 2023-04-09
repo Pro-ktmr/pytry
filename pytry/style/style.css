@@ -187,6 +187,10 @@ h3 {
   margin-bottom: 0;
 }
 
+.insert-buttons .tip-button .one-line {
+  color: #bbb;
+}
+
 .insert-buttons .tip-button pre {
   display: inline;
   font-family: "UDEV Gothic JPDOC", monospace;
