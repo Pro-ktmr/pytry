@@ -23,6 +23,7 @@ async function format(source) {
     self.postMessage(res);
   } catch (e) {
     console.log(e);
+    self.postMessage(source);
   }
 }
 
