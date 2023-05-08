@@ -47,6 +47,7 @@ export function translate(originalErrorMessage) {
   translated = translated.replaceAll(/NameError: name '(.*)' is not defined/g, `「$1」が見つかりません
 • 変数名などの小文字と大文字は区別します
 • 文字列はダブルクオーテーションで囲みます`);
+  translated = translated.replaceAll(/UnboundLocalError: local variable '(.*)' referenced before assignment/g, 'ローカル変数「$1」が代入よりも前に参照されました');
   translated = translated.replaceAll(/ValueError: list.remove(x): x not in list/g, 'remove で消そうとしている要素が存在していません');
   translated = translated.replaceAll(/AttributeError: '(.*)' object has no attribute '(.*)'/g, '「$1」のオブジェクトに「.$2」は存在しません');
 
@@ -62,15 +63,18 @@ export function translate(originalErrorMessage) {
   translated = translated.replaceAll('TypeError: slice indices must be integers or None or have an __index__ method', 'スライスの添え字は整数にしてください');
   translated = translated.replaceAll(/TypeError: 'str' object does not support item assignment/g, '文字列から添え字で取り出した文字は読み取り専用で代入はできません');
   translated = translated.replaceAll(/TypeError: '(.*)' object does not support item assignment/g, '「$1」の添え字で指定した要素に代入することはできません');
+  translated = translated.replaceAll(/TypeError: sequence item (.*): expected (.*) instance, (.*) found/g, '$1 番目の要素が「$2」ではなく「$3」になっています');
 
   // イコール
   translated = translated.replaceAll("SyntaxError: invalid syntax. Maybe you meant '==' or ':=' instead of '='?", '文法が間違っています');
   translated = translated.replaceAll("SyntaxError: cannot assign to expression here. Maybe you meant '==' instead of '='?", '代入のイコールの左辺に式は使えません');
+  translated = translated.replaceAll("SyntaxError: cannot assign to expression", '代入のイコールの左辺に式は使えません');
   translated = translated.replaceAll('SyntaxError: cannot assign to function call', '代入のイコールの左辺に関数呼び出しは使えません');
   translated = translated.replaceAll("SyntaxError: cannot assign to function call here. Maybe you meant '==' instead of '='?", '代入のイコールの左辺に関数呼び出しは使えません');
   translated = translated.replaceAll("SyntaxError: cannot assign to subscript here. Maybe you meant '==' instead of '='?", '代入のイコールの左辺に添え字は使えません');
   translated = translated.replaceAll("SyntaxError: cannot assign to literal here. Maybe you meant '==' instead of '='?", '代入のイコールの左辺に値は使えません');
   translated = translated.replaceAll('SyntaxError: cannot assign to operator', '代入のイコールの左辺に演算子は使えません');
+  translated = translated.replaceAll('SyntaxError: expression cannot contain assignment, perhaps you meant "=="?', '式の中で代入のイコールは使えません');
 
   // 開きと閉じ
   translated = translated.replaceAll('SyntaxError: EOL while scanning string literal', '文字列の終わりのクオーテーションが見つかりません');
@@ -104,7 +108,7 @@ export function translate(originalErrorMessage) {
   translated = translated.replaceAll(/TypeError: can only concatenate str \(not "(.*)"\) to str/g, `「$1」と文字列を + で結合することはできません
 • 文字列同士のみ結合できます
 • str() を使って文字列でないものを文字列に変換できます`);
-  translated = translated.replaceAll(/TypeError: can only concatenate list (not "(.*)") to list/g, '「$1」とリストを + で結合することはできません');
+  translated = translated.replaceAll(/TypeError: can only concatenate list \(not "(.*)"\) to list/g, '「$1」とリストを + で結合することはできません');
   translated = translated.replaceAll(/TypeError: bad operand type for unary ([+-]): '(.*)'/g, '「$2」に符号 $1 を付けることはできません');
 
   // 型
@@ -115,6 +119,7 @@ export function translate(originalErrorMessage) {
 • range() を使ってはどうですか？`);
   translated = translated.replaceAll(/TypeError: '(.*)' object is not iterable/g, '「$1」は繰り返し不可能です (リストのように使うことはできません)');
   translated = translated.replaceAll(/TypeError: argument of type '(.*)' is not iterable/g, '「$1」は繰り返し不可能です (in の右辺に使うことはできません)');
+  translated = translated.replaceAll(/ValueError: could not convert (.*) to (.*): '(.*)'/g, '「$3」という「$1」を「$2」に変換することはできません');
 
   // 組み込み関数呼び出し
   translated = translated.replaceAll(/TypeError: object of type '(.*)' has no len\(\)/g, 'len() の括弧内は「$1」にはできません');

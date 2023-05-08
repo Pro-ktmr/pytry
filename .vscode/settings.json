@@ -1,7 +1,7 @@
 {
-    "editor.formatOnSave": true,
-    "editor.formatOnType": true,
-    "editor.formatOnPaste": true,
+    "editor.formatOnSave": false,
+    "editor.formatOnType": false,
+    "editor.formatOnPaste": false,
     "javascript.format.semicolons": "insert",
     "javascript.preferences.quoteStyle": "single",
     "html.format.wrapLineLength": 0,
