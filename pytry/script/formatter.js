@@ -4,7 +4,9 @@ let worker, result = null;
  * フォーマッタの初期化を行う
  */
 export function initialize() {
+  console.debug("start formatter-worker");
   worker = new Worker('./script/formatter-worker.js');
+  console.debug("addEventListener formatter-worker");
   worker.addEventListener('message', workerListenner);
 }
 
@@ -40,7 +42,16 @@ async function format(source) {
 const wait = async (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 function workerListenner(message) {
-  result = message.data;
+  switch (message.data.kind) {
+    case "result":
+      result = message.data.content;
+      break;
+    case "debug":
+      console.debug(message.data.content);
+      break;
+    default:
+      break;
+  }
 }
 
 class PyTryOnTypeFormattingEditProvider {

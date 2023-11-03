@@ -3,9 +3,17 @@ importScripts('../modules/pyodide/pyodide.js');
 const pyodideReadyPromise = initialize();
 
 async function initialize() {
-  const pyodide = await loadPyodide({
-    indexURL: new URL('../modules/pyodide', location.href).toString(),
-  });
+  let pyodide;
+  while (true) {
+    try {
+      pyodide = await loadPyodide({
+        indexURL: new URL('../modules/pyodide', location.href).toString(),
+      });
+      break;
+    }
+    catch (e) {
+    }
+  }
 
   pyodide.runPython(await (await fetch('./py/compiler-initialize.py')).text());
 

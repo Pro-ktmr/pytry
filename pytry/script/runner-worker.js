@@ -5,13 +5,25 @@ let stdin_lines = [];
 const pyodideReadyPromise = initialize();
 
 async function initialize() {
-  const pyodide = await loadPyodide({
-    indexURL: new URL('../modules/pyodide', location.href).toString(),
-  });
+  let pyodide;
+  while (true) {
+    try {
+      debugLog("start loading pyodide on runner");
+      pyodide = await loadPyodide({
+        indexURL: new URL('../modules/pyodide', location.href).toString(),
+      });
+      break;
+    }
+    catch (e) {
+      debugLog(e.name + ": " + e.message + " (on runner)");
+    }
+  }
 
+  debugLog("start installing micropip on runner");
   await pyodide.loadPackage('micropip');
   pyodide.runPython(await (await fetch('./py/runner-initialize.py')).text());
 
+  debugLog("start loading packages on runner");
   pyodide.loadPackage('numpy'); // Fundamental package for array computing in Python
   pyodide.loadPackage('scipy'); // Fundamental algorithms for scientific computing in Python
   pyodide.loadPackage('networkx'); // Python package for creating and manipulating graphs and networks
@@ -29,6 +41,8 @@ async function initialize() {
   });
 
   initializaionCompleted = true;
+
+  debugLog("initializing done on runner");
 
   return pyodide;
 }
@@ -89,3 +103,7 @@ function python_error(message) {
 self.addEventListener('message', (message) => {
   run(message.data.source, message.data.stdin);
 });
+
+function debugLog(message) {
+  self.postMessage({ kind: "debug", content: message });
+}

@@ -19,7 +19,9 @@ export function initialize(_runButtonId, _runCompletedWindowId, _runTimeoutWindo
 
 function initializeWorker() {
   disableReady();
+  console.debug("start runner-worker");
   worker = new Worker('./script/runner-worker.js');
+  console.debug("addEventListener runner-worker");
   worker.addEventListener('message', workerListenner);
 }
 
@@ -154,6 +156,10 @@ function workerListenner(message) {
       input: editor.inputEditor.getValue(),
       output: editor.outputEditor.getValue(),
     });
+  }
+
+  if (kind == "debug") {
+    console.debug(content);
   }
 }
 
