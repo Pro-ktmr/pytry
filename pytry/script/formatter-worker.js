@@ -36,6 +36,7 @@ async function format(source) {
     self.postMessage({ kind: "result", content: res });
   } catch (e) {
     console.log(e);
+    self.postMessage(source);
   }
 }
 
