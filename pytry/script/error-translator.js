@@ -59,7 +59,8 @@ export function translate(originalErrorMessage) {
 • 変数名などの小文字と大文字は区別します
 • 文字列はダブルクオーテーションで囲みます`);
   translated = translated.replaceAll(/UnboundLocalError: local variable '(.*)' referenced before assignment/g, 'ローカル変数「$1」が代入よりも前に参照されました');
-  translated = translated.replaceAll(/ValueError: list.remove(x): x not in list/g, 'remove で消そうとしている要素が存在していません');
+  translated = translated.replaceAll('ValueError: list.remove(x): x not in list', 'remove で消そうとしている要素が存在していません');
+  translated = translated.replaceAll('IndexError: pop index out of range', 'pop で消そうとしている添え字の要素が存在していません');
   translated = translated.replaceAll(/AttributeError: '(.*)' object has no attribute '(.*)'/g, '「$1」のオブジェクトに「.$2」は存在しません');
 
   // 添え字
