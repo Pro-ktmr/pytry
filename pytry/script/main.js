@@ -42,4 +42,8 @@ window.addEventListener('load', (event) => {
       event.preventDefault();
     }
   });
+
+  setInterval(() => {
+    document.body.style.padding = "0";
+  }, 1000);
 });
