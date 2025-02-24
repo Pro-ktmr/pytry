@@ -122,6 +122,11 @@ function workerListenner(message) {
     editor.addToOutputEditor(content);
   }
 
+  if (kind == "image") {
+    document.getElementById("matplotlib-result-div").style = "";
+    document.getElementById("matplotlib-result-img").src = content;
+  }
+
   if (kind == "error") {
     const translated = errorTranslator.translate(content);
     editor.addToOutputEditor(translated);
