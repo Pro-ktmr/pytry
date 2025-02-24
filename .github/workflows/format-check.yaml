@@ -1,0 +1,25 @@
+name: "Format Check"
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  Prettier:
+    name: Run Prettier
+    runs-on: "ubuntu-latest"
+
+    steps:
+      - name: "Checkout"
+        uses: "actions/checkout@v4"
+
+      - name: "Setup Node.js 20.12.2"
+        uses: "actions/setup-node@v4"
+        with:
+          node-version: "20.12.2"
+
+      - name: "Install npm dependencies"
+        run: "npm ci"
+
+      - name: "Run Prettier"
+        run: "npm run format:check"
