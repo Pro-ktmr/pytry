@@ -1,4 +1,4 @@
-importScripts("https://cdn.jsdelivr.net/pyodide/v0.21.0/full/pyodide.js");
+importScripts("https://cdn.jsdelivr.net/pyodide/v0.27.2/full/pyodide.js");
 
 let initializaionCompleted = false;
 let stdin_lines = [];
@@ -11,7 +11,7 @@ async function initialize() {
       debugLog("start loading pyodide on runner");
       pyodide = await loadPyodide({
         indexURL: new URL(
-          "https://cdn.jsdelivr.net/pyodide/v0.21.0/full",
+          "https://cdn.jsdelivr.net/pyodide/v0.27.2/full",
           location.href,
         ).toString(),
       });
@@ -23,9 +23,12 @@ async function initialize() {
 
   debugLog("start installing micropip on runner");
   await pyodide.loadPackage("micropip");
+  await pyodide.runPythonAsync("import os; os.environ['MPLBACKEND'] = 'agg'");
+  await pyodide.loadPackage("matplotlib"); // Python plotting package
   pyodide.runPython(await (await fetch("./py/runner-initialize.py")).text());
 
   debugLog("start loading packages on runner");
+
   pyodide.loadPackage("numpy"); // Fundamental package for array computing in Python
   pyodide.loadPackage("scipy"); // Fundamental algorithms for scientific computing in Python
   pyodide.loadPackage("networkx"); // Python package for creating and manipulating graphs and networks
@@ -57,7 +60,7 @@ async function run(source, stdin) {
     pyodide.globals.set("__code_to_run", source);
     await pyodide.runPython(`exec_code()`);
   } catch (e) {
-    if (e instanceof pyodide.PythonError) {
+    if (e instanceof pyodide.ffi.PythonError) {
       const reformat_exception = pyodide.globals.get("reformat_exception");
       python_error(reformat_exception());
     } else {
@@ -85,6 +88,13 @@ function stdout_callback(message) {
   self.postMessage({
     kind: "stdout",
     content: message,
+  });
+}
+
+function image_callback(image) {
+  self.postMessage({
+    kind: "image",
+    content: image,
   });
 }
 

@@ -47,9 +47,16 @@ window.addEventListener("load", (event) => {
 
   document.getElementById("run").addEventListener("click", async (event) => {
     logger.log("run_click", {});
+    document.getElementById("matplotlib-result-div").style = "display: none;";
     await formatter.formatAndUpdateEditor(editor.sourceEditor);
     runner.run();
   });
+
+  document
+    .getElementById("matplotlib-result-delete-button")
+    .addEventListener("click", () => {
+      document.getElementById("matplotlib-result-div").style = "display: none;";
+    });
 
   document.addEventListener("keydown", (event) => {
     if (event.ctrlKey && event.key === "s") {

@@ -128,6 +128,43 @@ h1 {
   font-family: "UDEV Gothic JPDOC", monospace;
 }
 
+#matplotlib-result-div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  background: black;
+  width: 100%;
+  height: calc(100% - 2.4rem);
+  top: 2.4rem;
+  left: 0;
+  z-index: 100000000;
+}
+
+#matplotlib-result-img {
+  max-width: calc(100% - 1rem);
+  max-height: calc(100% - 1rem);
+}
+
+#matplotlib-result-delete-button {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: white;
+  border: 1px black solid;
+  border-radius: 0.2rem;
+  cursor: pointer;
+  width: 2rem;
+  height: 2rem;
+  text-align: center;
+  line-height: 2rem;
+  font-weight: 900;
+}
+
+#matplotlib-result-delete-button:hover {
+  opacity: 0.8;
+}
+
 /* メイン - コンポーネント */
 
 .editor-title {
