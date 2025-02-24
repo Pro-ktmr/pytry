@@ -1,8 +1,4 @@
 {
-    "editor.formatOnSave": false,
-    "editor.formatOnType": false,
-    "editor.formatOnPaste": false,
-    "javascript.format.semicolons": "insert",
-    "javascript.preferences.quoteStyle": "single",
-    "html.format.wrapLineLength": 0,
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
 }
