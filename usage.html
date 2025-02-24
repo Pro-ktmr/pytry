@@ -1,120 +1,128 @@
 <!doctype html>
 <html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <title>使い方 | PyTry (パイトライ)</title>
 
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>使い方 | PyTry (パイトライ)</title>
+    <link href="./style/style.css" rel="stylesheet" />
+    <link href="./img/favicon.ico" rel="icon" />
+  </head>
 
-  <link href="./style/style.css" rel="stylesheet" />
-  <link href="./img/favicon.ico" rel="icon" />
-</head>
+  <!-- Google tag (gtag.js) -->
+  <script
+    async
+    src="https://www.googletagmanager.com/gtag/js?id=G-W720JDNBB9"
+  ></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+    gtag("js", new Date());
 
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-W720JDNBB9"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag() { dataLayer.push(arguments); }
-  gtag('js', new Date());
+    gtag("config", "G-W720JDNBB9");
+  </script>
 
-  gtag('config', 'G-W720JDNBB9');
-</script>
-
-<body>
-  <header>
-    <h1>
-      <a href="./">
-        <img src="./img/logo_mark.svg" alt="PyTry" class="logo-mark" />
-        <img src="./img/logo_type.svg" alt="PyTry" class="logo-type" />
-      </a>
-    </h1>
-  </header>
-  <div class="container">
-    <h2>PyTry の使い方</h2>
-    <div class="usage">
-      <img class="usage-img" src="./img/ss.png" />
-      <div class="usage-description">
-        PyTry を<strong>起動</strong>します
+  <body>
+    <header>
+      <h1>
+        <a href="./">
+          <img src="./img/logo_mark.svg" alt="PyTry" class="logo-mark" />
+          <img src="./img/logo_type.svg" alt="PyTry" class="logo-type" />
+        </a>
+      </h1>
+    </header>
+    <div class="container">
+      <h2>PyTry の使い方</h2>
+      <div class="usage">
+        <img class="usage-img" src="./img/ss.png" />
+        <div class="usage-description">PyTry を<strong>起動</strong>します</div>
       </div>
-    </div>
-    <div class="usage">
-      <img class="usage-img" src="./img/ss-source.png" />
-      <div class="usage-description">
-        <strong>ソースコード記入欄</strong>にソースコードを書きます
+      <div class="usage">
+        <img class="usage-img" src="./img/ss-source.png" />
+        <div class="usage-description">
+          <strong>ソースコード記入欄</strong>にソースコードを書きます
+        </div>
       </div>
-    </div>
-    <div class="usage">
-      <img class="usage-img" src="./img/ss-insert.png" />
-      <div class="usage-description">
-        <strong>標準入力を読み込むためのコード</strong>はボタンを押して挿入できます
-        <div class="usage-detail">
-          エディタでこのコードのハイライトが消えてしまった場合，コードの一部 (末尾の括弧など) を誤って消してしまった可能性があります
+      <div class="usage">
+        <img class="usage-img" src="./img/ss-insert.png" />
+        <div class="usage-description">
+          <strong>標準入力を読み込むためのコード</strong
+          >はボタンを押して挿入できます
+          <div class="usage-detail">
+            エディタでこのコードのハイライトが消えてしまった場合，コードの一部
+            (末尾の括弧など) を誤って消してしまった可能性があります
+          </div>
+        </div>
+      </div>
+      <div class="usage">
+        <img class="usage-img" src="./img/ss-input.png" />
+        <div class="usage-description">
+          ソースコードを書き終わったら，<strong>入力欄</strong>に入力を書きます
+        </div>
+      </div>
+      <div class="usage">
+        <img class="usage-img" src="./img/ss-paste.png" />
+        <div class="usage-description">
+          入力欄では<strong>ペーストボタン</strong>も活用できます
+        </div>
+      </div>
+      <div class="usage">
+        <img class="usage-img" src="./img/ss-run.png" />
+        <div class="usage-description">
+          ソースコードと入力の準備ができたら，<strong>実行ボタン</strong>を押します
+          <div class="usage-detail">
+            実行ボタンを押したタイミングでオートフォーマットが走ります
+          </div>
+        </div>
+      </div>
+      <div class="usage">
+        <img class="usage-img" src="./img/ss2-output.png" />
+        <div class="usage-description">
+          <strong>出力欄</strong>にプログラムの実行結果が表示されます
+        </div>
+      </div>
+      <div class="usage">
+        <img class="usage-img" src="./img/ss2-copy.png" />
+        <div class="usage-description">
+          <strong>コピーボタン</strong
+          >を用いて完成したソースコードを他のシステムで提出できます
+        </div>
+      </div>
+
+      <hr />
+
+      <div class="usage">
+        <img class="usage-img" src="./img/ss-realtime-error.png" />
+        <div class="usage-description">
+          ソースコードに表示された<strong>オレンジの波線は文法ミス</strong>を示します<br />
+          <strong>マウスホバーでエラーメッセージ</strong>を確認できます
+          <div class="usage-detail">
+            PyTry
+            は少しせっかちななので，ソースコードを書いている最中にエラーが指摘されることもあります
+          </div>
+        </div>
+      </div>
+      <div class="usage">
+        <img class="usage-img" src="./img/ss-runtime-error.png" />
+        <div class="usage-description">
+          <strong>実行時エラーは赤色の波線</strong>で示されます
+        </div>
+      </div>
+      <div class="usage">
+        <img class="usage-img" src="./img/ss-timeout.png" />
+        <div class="usage-description">
+          実行がなかなか終わらないときは<strong>強制終了ボタン</strong>を押しましょう
         </div>
       </div>
     </div>
-    <div class="usage">
-      <img class="usage-img" src="./img/ss-input.png" />
-      <div class="usage-description">
-        ソースコードを書き終わったら，<strong>入力欄</strong>に入力を書きます
-      </div>
-    </div>
-    <div class="usage">
-      <img class="usage-img" src="./img/ss-paste.png" />
-      <div class="usage-description">
-        入力欄では<strong>ペーストボタン</strong>も活用できます
-      </div>
-    </div>
-    <div class="usage">
-      <img class="usage-img" src="./img/ss-run.png" />
-      <div class="usage-description">
-        ソースコードと入力の準備ができたら，<strong>実行ボタン</strong>を押します
-        <div class="usage-detail">
-          実行ボタンを押したタイミングでオートフォーマットが走ります
-        </div>
-      </div>
-    </div>
-    <div class="usage">
-      <img class="usage-img" src="./img/ss2-output.png" />
-      <div class="usage-description">
-        <strong>出力欄</strong>にプログラムの実行結果が表示されます
-      </div>
-    </div>
-    <div class="usage">
-      <img class="usage-img" src="./img/ss2-copy.png" />
-      <div class="usage-description">
-        <strong>コピーボタン</strong>を用いて完成したソースコードを他のシステムで提出できます
-      </div>
-    </div>
-
-    <hr />
-
-    <div class="usage">
-      <img class="usage-img" src="./img/ss-realtime-error.png" />
-      <div class="usage-description">
-        ソースコードに表示された<strong>オレンジの波線は文法ミス</strong>を示します<br />
-        <strong>マウスホバーでエラーメッセージ</strong>を確認できます
-        <div class="usage-detail">
-          PyTry は少しせっかちななので，ソースコードを書いている最中にエラーが指摘されることもあります
-        </div>
-      </div>
-    </div>
-    <div class="usage">
-      <img class="usage-img" src="./img/ss-runtime-error.png" />
-      <div class="usage-description">
-        <strong>実行時エラーは赤色の波線</strong>で示されます
-      </div>
-    </div>
-    <div class="usage">
-      <img class="usage-img" src="./img/ss-timeout.png" />
-      <div class="usage-description">
-        実行がなかなか終わらないときは<strong>強制終了ボタン</strong>を押しましょう
-      </div>
-    </div>
-  </div>
-  <footer>
-    <a href="terms.html">利用条件</a><br />
-    © Yuki Kitamura 2022 -
-  </footer>
-</body>
-
+    <footer>
+      <a href="terms.html">利用条件</a><br />
+      © Yuki Kitamura 2022 -
+    </footer>
+  </body>
 </html>

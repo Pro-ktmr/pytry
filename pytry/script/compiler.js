@@ -1,16 +1,18 @@
-import * as editor from './editor.js';
-import * as errorTranslator from './error-translator.js';
-import * as logger from './logger.js';
+import * as editor from "./editor.js";
+import * as errorTranslator from "./error-translator.js";
+import * as logger from "./logger.js";
 
-let worker, timer = null, currentShownError = '';
+let worker,
+  timer = null,
+  currentShownError = "";
 
 /**
  * コンパイラの初期化を行う
  */
 export function initialize() {
   editor.sourceChangeListenner.push(onDidChangeContent);
-  worker = new Worker('./script/compiler-worker.js');
-  worker.addEventListener('message', workerListenner);
+  worker = new Worker("./script/compiler-worker.js");
+  worker.addEventListener("message", workerListenner);
 
   timer = setTimeout(timerHandler, 3000);
 }
@@ -39,9 +41,9 @@ function workerListenner(message) {
   const doesDetectNewError = message.data.mode;
 
   if (!doesDetectNewError) {
-    if (error == '' || error != currentShownError) {
-      editor.clearSourceEditorMarker('Warning');
-      currentShownError = '';
+    if (error == "" || error != currentShownError) {
+      editor.clearSourceEditorMarker("Warning");
+      currentShownError = "";
     }
     return;
   }
@@ -55,10 +57,10 @@ function workerListenner(message) {
   const lineNumber = Number(err[err.length - 1][1]);
   if (lineNumber == logger.getCurrentLineNumber()) return;
 
-  editor.addSourceEditorMarker(lineNumber, translated, 'Warning');
+  editor.addSourceEditorMarker(lineNumber, translated, "Warning");
   currentShownError = error;
 
-  logger.log('compile_error', {
+  logger.log("compile_error", {
     three_lines: logger.getThreeLines(lineNumber),
     line_number: lineNumber,
     error: error,
