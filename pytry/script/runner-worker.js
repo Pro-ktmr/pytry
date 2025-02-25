@@ -1,4 +1,4 @@
-importScripts("https://cdn.jsdelivr.net/pyodide/v0.27.2/full/pyodide.js");
+importScripts("https://cdn.jsdelivr.net/pyodide/v0.21.0/full/pyodide.js");
 
 let initializaionCompleted = false;
 let stdin_lines = [];
@@ -11,7 +11,7 @@ async function initialize() {
       debugLog("start loading pyodide on runner");
       pyodide = await loadPyodide({
         indexURL: new URL(
-          "https://cdn.jsdelivr.net/pyodide/v0.27.2/full",
+          "https://cdn.jsdelivr.net/pyodide/v0.21.0/full",
           location.href,
         ).toString(),
       });
@@ -60,7 +60,7 @@ async function run(source, stdin) {
     pyodide.globals.set("__code_to_run", source);
     await pyodide.runPython(`exec_code()`);
   } catch (e) {
-    if (e instanceof pyodide.ffi.PythonError) {
+    if (e instanceof pyodide.PythonError) {
       const reformat_exception = pyodide.globals.get("reformat_exception");
       python_error(reformat_exception());
     } else {
