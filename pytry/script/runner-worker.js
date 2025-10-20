@@ -25,6 +25,11 @@ async function initialize() {
   await pyodide.loadPackage("micropip");
   await pyodide.runPythonAsync("import os; os.environ['MPLBACKEND'] = 'agg'");
   await pyodide.loadPackage("matplotlib"); // Python plotting package
+  await pyodide.runPythonAsync(`
+import micropip
+await micropip.install("matplotlib-fontja")
+import matplotlib_fontja
+`); // matplotlibを日本語表示に対応させます。
   pyodide.runPython(await (await fetch("./py/runner-initialize.py")).text());
 
   debugLog("start loading packages on runner");
