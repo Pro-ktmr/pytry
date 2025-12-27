@@ -6,7 +6,7 @@ import * as runner from "./interactive-runner.js";
 import * as logger from "./logger.js";
 
 window.addEventListener("load", (event) => {
-  editor.initialize("source-editor", "input-editor", "output-editor");
+  editor.initialize("source-editor", "input-editor", "output-editor", true);
   hintFinder.initialize();
   compiler.initialize();
   formatter.initialize();
@@ -51,7 +51,7 @@ window.addEventListener("load", (event) => {
     .addEventListener("click", editor.insert_list_map_int_input_split);
 
   document.getElementById("run").addEventListener("click", async (event) => {
-    logger.log("(interactive)run_click", {});
+    logger.log("run_click", {});
     await formatter.formatAndUpdateEditor(editor.sourceEditor);
     runner.run();
   });

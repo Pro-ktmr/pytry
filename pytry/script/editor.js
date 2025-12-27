@@ -10,8 +10,14 @@ let decorationsCollection = [];
  * @param {string} sourceEditorId ソースエディタの id
  * @param {string} inputEditorId インプットエディタの id
  * @param {string} outputEditorId アウトプットエディタの id
+ * @param {boolean} interactive インタラクティブモードかどうか
  */
-export function initialize(sourceEditorId, inputEditorId, outputEditorId) {
+export function initialize(
+  sourceEditorId,
+  inputEditorId,
+  outputEditorId,
+  interactive = false,
+) {
   require.config({
     paths: {
       vs: "https://cdn.jsdelivr.net/npm/monaco-editor@0.32.0/min/vs",
@@ -24,8 +30,20 @@ export function initialize(sourceEditorId, inputEditorId, outputEditorId) {
   let sourceText = "a = int(input())\nb = int(input())\nprint(a + b)\n";
   let inputText = "7\n5\n";
   let outputText = "";
-  if (localStorage.getItem("source_text") != null) {
-    sourceText = decodeURIComponent(localStorage.getItem("source_text"));
+  if (interactive) {
+    sourceText = `print("こんにちは！")
+print("あなたの好きな食べ物を教えてください。")
+food = input()
+print("なるほど、", food, "が好きなんですね！")
+`;
+  }
+  if (
+    localStorage.getItem("source_text" + (interactive ? "_interactive" : "")) !=
+    null
+  ) {
+    sourceText = decodeURIComponent(
+      localStorage.getItem("source_text" + (interactive ? "_interactive" : "")),
+    );
   }
   if (localStorage.getItem("input_text") != null) {
     inputText = decodeURIComponent(localStorage.getItem("input_text"));
@@ -33,7 +51,10 @@ export function initialize(sourceEditorId, inputEditorId, outputEditorId) {
   if (localStorage.getItem("output_text") != null) {
     outputText = decodeURIComponent(localStorage.getItem("output_text"));
   }
-  localStorage.setItem("source_text", encodeURIComponent(sourceText));
+  localStorage.setItem(
+    "source_text" + (interactive ? "_interactive" : ""),
+    encodeURIComponent(sourceText),
+  );
   localStorage.setItem("input_text", encodeURIComponent(inputText));
   localStorage.setItem("output_text", encodeURIComponent(outputText));
 
@@ -68,7 +89,7 @@ export function initialize(sourceEditorId, inputEditorId, outputEditorId) {
     sourceEditor.setModel(sourceSession);
     sourceSession.onDidChangeContent((event) => {
       localStorage.setItem(
-        "source_text",
+        "source_text" + (interactive ? "_interactive" : ""),
         encodeURIComponent(sourceEditor.getValue()),
       );
       if (event.changes[0].text.includes("\n")) {

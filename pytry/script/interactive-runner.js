@@ -72,7 +72,7 @@ export async function run() {
 
   runInInteractiveMode(editor.sourceEditor.getValue());
 
-  logger.log("(interactive)run", {});
+  logger.log("run", {});
 }
 
 function timeout() {
@@ -155,7 +155,7 @@ async function runInInteractiveMode(source) {
     }
   }
 
-  logger.log("(interactive)run_done", {
+  logger.log("run_done", {
     source: editor.sourceEditor.getValue(),
     input: "",
     output: interactiveConsole.innerHTML,
@@ -204,7 +204,7 @@ function python_error(content) {
     editor.addSourceEditorMarker(lineNumber, translated, "Error");
     editor.addSourceEditorDecoration(lineNumber, "glyphMarginError");
 
-    logger.log("(interactive)runtime_error", {
+    logger.log("runtime_error", {
       three_lines: logger.getThreeLines(lineNumber),
       line_number: lineNumber,
       error: content,

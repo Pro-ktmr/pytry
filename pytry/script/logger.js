@@ -27,7 +27,10 @@ function send(event_name, params) {
           session_id: sessionId,
           event_name: event_name,
         },
-        params,
+        {
+          ...params,
+          interactive: document.getElementById("interactive-console") != null,
+        },
       ),
     ),
   };
