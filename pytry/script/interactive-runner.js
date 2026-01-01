@@ -108,6 +108,10 @@ async function initializeInteractiveMode() {
   await pyodide.loadPackage("matplotlib"); // Python plotting package
   await pyodide.runPythonAsync(`
 import micropip
+await micropip.install("seaborn")
+import seaborn
+`); // Statistical data visualization
+  await pyodide.runPythonAsync(`
 await micropip.install("matplotlib-fontja")
 import matplotlib_fontja
 `); // matplotlibを日本語表示に対応させます。
