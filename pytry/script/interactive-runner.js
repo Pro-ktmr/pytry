@@ -173,7 +173,7 @@ function stdin_callback() {
   const interactiveConsole = document.getElementById("interactive-console");
   const line = prompt(interactiveConsole.innerHTML);
   interactiveConsole.innerHTML += line + "\n";
-  return line;
+  return line + "\n";
 }
 
 function stdout_callback(message) {
