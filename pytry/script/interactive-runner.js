@@ -171,7 +171,9 @@ async function runInInteractiveMode(source) {
 
 function stdin_callback() {
   const interactiveConsole = document.getElementById("interactive-console");
-  const line = prompt(interactiveConsole.innerHTML);
+  const lines = interactiveConsole.innerHTML.split("\n");
+  const last8Lines = lines.slice(-8).join("\n");
+  const line = prompt(last8Lines);
   interactiveConsole.innerHTML += line + "\n";
   return line + "\n";
 }
@@ -183,7 +185,9 @@ function stdout_callback(message) {
   interactiveConsole.innerHTML += message;
 
   if (message.endsWith("\n")) {
-    alert(interactiveConsole.innerHTML);
+    const lines = interactiveConsole.innerHTML.split("\n");
+    const last8Lines = lines.slice(-8).join("\n");
+    alert(last8Lines);
   }
 }
 
