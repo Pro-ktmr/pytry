@@ -23,7 +23,7 @@ async def exec_code():
     pyconsole.stdin_callback = js.stdin_callback
     pyconsole.stdout_callback = js.stdout_callback
     pyconsole.stderr_callback = js.stdout_callback
-    await pyconsole.push("exec(__code_to_run, {})")
+    await pyconsole.push("exec(__code_to_run, {'__name__': '__main__'})")
 
 
 def show_image_pytry(*args, **kwargs):
